@@ -1,14 +1,18 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:imdumb/core/routes/app_router.gr.dart';
 import 'package:imdumb/core/utils/extension/context_extension.dart';
 import 'package:imdumb/features/home/domain/entities/popular_movie_entity.dart';
-import 'package:imdumb/features/home/presentation/bloc/bloc/home_bloc.dart';
+import 'package:imdumb/features/home/presentation/bloc/popular_movies/popular_movies_bloc.dart';
 
 class PopularMoviesSection extends StatefulWidget {
-  const PopularMoviesSection({super.key});
+  final ValueChanged<int>? onPageChanged;
+
+  const PopularMoviesSection({super.key, this.onPageChanged});
 
   @override
   State<PopularMoviesSection> createState() => _PopularMoviesSectionState();
@@ -23,7 +27,7 @@ class _PopularMoviesSectionState extends State<PopularMoviesSection> {
     final screenWidth = context.screenWidth;
     final carouselHeight = (screenWidth * 0.8) * (9 / 16) * 1.25;
 
-    return BlocBuilder<HomeBloc, HomeState>(
+    return BlocBuilder<PopularMoviesBloc, PopularMoviesState>(
       builder: (context, state) {
         return SliverToBoxAdapter(
           child: Column(
@@ -36,9 +40,9 @@ class _PopularMoviesSectionState extends State<PopularMoviesSection> {
                   style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
                 ),
               ),
-              if (state.popularMovieState == PopularMovieState.loading)
+              if (state.status == PopularMoviesStatus.loading)
                 _ShimmerCarousel(height: carouselHeight)
-              else if (state.popularMovieState == PopularMovieState.failure)
+              else if (state.status == PopularMoviesStatus.failure)
                 Padding(
                   padding: const EdgeInsets.all(24.0),
                   child: Center(
@@ -48,7 +52,7 @@ class _PopularMoviesSectionState extends State<PopularMoviesSection> {
                     ),
                   ),
                 )
-              else if (state.listMovie.isEmpty)
+              else if (state.movies.isEmpty)
                 const Padding(
                   padding: EdgeInsets.all(24.0),
                   child: Center(child: Text('No hay películas disponibles')),
@@ -58,7 +62,7 @@ class _PopularMoviesSectionState extends State<PopularMoviesSection> {
                   children: [
                     CarouselSlider.builder(
                       carouselController: _carouselController,
-                      itemCount: state.listMovie.length,
+                      itemCount: state.movies.length,
                       options: CarouselOptions(
                         height: carouselHeight,
                         aspectRatio: 16 / 9,
@@ -75,9 +79,12 @@ class _PopularMoviesSectionState extends State<PopularMoviesSection> {
                         enlargeCenterPage: true,
                         enlargeFactor: 0.1,
                         scrollDirection: Axis.horizontal,
+                        onPageChanged: (index, reason) {
+                          widget.onPageChanged?.call(index);
+                        },
                       ),
                       itemBuilder: (context, index, realIndex) {
-                        final movie = state.listMovie[index];
+                        final movie = state.movies[index];
                         return _MovieCard(movie: movie);
                       },
                     ),
@@ -136,101 +143,107 @@ class _MovieCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 8.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.3),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            if (movie.backdropUrlW780 != null)
-              CachedNetworkImage(
-                imageUrl: movie.backdropUrlW780!,
-                fit: BoxFit.cover,
-                placeholder: (context, url) => Container(
-                  color: Colors.grey[900],
-                  child: const Center(child: CircularProgressIndicator()),
-                ),
-                errorWidget: (context, url, error) => Container(
-                  color: Colors.grey[900],
-                  child: const Icon(Icons.error),
-                ),
-              )
-            else
-              Container(
-                color: Colors.grey[900],
-                child: const Icon(Icons.movie, size: 64),
-              ),
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.transparent,
-                    Colors.black.withValues(alpha: 0.7),
-                  ],
-                ),
-              ),
+    return InkWell(
+      onTap: () {
+        context.router.push(MovieDetailRoute(movieId: movie.id));
+      },
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 8.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.3),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
             ),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      movie.title,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Icon(Icons.star, color: Colors.amber, size: 16),
-                        const SizedBox(width: 4),
-                        Text(
-                          movie.formattedVoteAverage,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                          ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              if (movie.backdropUrlW780 != null)
+                CachedNetworkImage(
+                  imageUrl: movie.backdropUrlW780!,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Container(
+                    color: Colors.grey[900],
+                    child: const Center(child: CircularProgressIndicator()),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    color: Colors.grey[900],
+                    child: const Icon(Icons.error),
+                  ),
+                )
+              else
+                Container(
+                  color: Colors.grey[900],
+                  child: const Icon(Icons.movie, size: 64),
+                ),
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.transparent,
+                      Colors.black.withValues(alpha: 0.7),
+                    ],
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        movie.title,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
-                        const SizedBox(width: 16),
-                        if (movie.releaseYear != null)
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Icon(Icons.star, color: Colors.amber, size: 16),
+                          const SizedBox(width: 4),
                           Text(
-                            '${movie.releaseYear}',
+                            movie.formattedVoteAverage,
                             style: const TextStyle(
-                              color: Colors.white70,
+                              color: Colors.white,
                               fontSize: 14,
                             ),
                           ),
-                      ],
-                    ),
-                  ],
+                          const SizedBox(width: 16),
+                          if (movie.releaseYear != null)
+                            Text(
+                              '${movie.releaseYear}',
+                              style: const TextStyle(
+                                color: Colors.white70,
+                                fontSize: 14,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

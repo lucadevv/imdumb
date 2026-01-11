@@ -1,30 +1,34 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:imdumb/core/routes/app_router.gr.dart';
 import 'package:imdumb/core/utils/extension/context_extension.dart';
 import 'package:imdumb/features/home/domain/entities/popular_movie_entity.dart';
 import 'package:imdumb/features/home/domain/entities/genre_entity.dart';
-import 'package:imdumb/features/home/presentation/bloc/bloc/home_bloc.dart';
+import 'package:imdumb/features/home/presentation/bloc/genres/genres_bloc.dart';
+import 'package:imdumb/features/home/presentation/bloc/genre_movies/genre_movies_bloc.dart';
+import 'package:imdumb/features/movies_list/domain/entities/movie_list_type.dart';
 
 class GenreMoviesSections extends StatelessWidget {
   const GenreMoviesSections({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeBloc, HomeState>(
+    return BlocBuilder<GenresBloc, GenresState>(
       builder: (context, state) {
-        if (state.genresState == PopularMovieState.loading) {
+        if (state.status == GenresStatus.loading) {
           return const SliverToBoxAdapter(child: SizedBox.shrink());
         }
 
-        if (state.genresState == PopularMovieState.failure) {
+        if (state.status == GenresStatus.failure) {
           return SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.all(24.0),
               child: Center(
                 child: Text(
-                  state.genresErrorMessage ?? 'Error al cargar los géneros',
+                  state.errorMessage ?? 'Error al cargar los géneros',
                   style: TextStyle(color: context.appColor.error),
                 ),
               ),
@@ -72,10 +76,10 @@ class _GenreMoviesSectionContentState extends State<_GenreMoviesSectionContent> 
 
     // Cargar películas del género cuando se inicializa
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final state = context.read<HomeBloc>().state;
+      final state = context.read<GenreMoviesBloc>().state;
       final movies = state.moviesByGenre[widget.genre.id];
       if (movies == null || movies.isEmpty) {
-        context.read<HomeBloc>().add(
+        context.read<GenreMoviesBloc>().add(
           FetchMoviesByGenreEvent(
             genreId: widget.genre.id,
             page: 1,
@@ -94,14 +98,14 @@ class _GenreMoviesSectionContentState extends State<_GenreMoviesSectionContent> 
 
   void _onScroll() {
     if (_isBottom) {
-      final state = context.read<HomeBloc>().state;
+      final state = context.read<GenreMoviesBloc>().state;
       final genreState =
-          state.genreMovieStates[widget.genre.id] ?? PopularMovieState.initial;
-      final hasMore = state.hasMoreByGenre[widget.genre.id] ?? false;
-      final currentPage = state.genrePages[widget.genre.id] ?? 1;
+          state.movieStates[widget.genre.id] ?? GenreMovieStatus.initial;
+      final hasMore = state.hasMore[widget.genre.id] ?? false;
+      final currentPage = state.pages[widget.genre.id] ?? 1;
 
-      if (hasMore && genreState != PopularMovieState.loading) {
-        context.read<HomeBloc>().add(
+      if (hasMore && genreState != GenreMovieStatus.loading) {
+        context.read<GenreMoviesBloc>().add(
           FetchMoviesByGenreEvent(
             genreId: widget.genre.id,
             page: currentPage + 1,
@@ -122,13 +126,12 @@ class _GenreMoviesSectionContentState extends State<_GenreMoviesSectionContent> 
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeBloc, HomeState>(
+    return BlocBuilder<GenreMoviesBloc, GenreMoviesState>(
       builder: (context, state) {
         final movies = state.moviesByGenre[widget.genre.id] ?? [];
         final genreState =
-            state.genreMovieStates[widget.genre.id] ??
-            PopularMovieState.initial;
-        final errorMessage = state.genreErrors[widget.genre.id];
+            state.movieStates[widget.genre.id] ?? GenreMovieStatus.initial;
+        final errorMessage = state.errors[widget.genre.id];
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -148,14 +151,25 @@ class _GenreMoviesSectionContentState extends State<_GenreMoviesSectionContent> 
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  TextButton(onPressed: () {}, child: const Text('Ver más')),
+                  TextButton(
+                    onPressed: () {
+                      context.router.push(
+                        MoviesListRoute(
+                          type: MovieListType.genre,
+                          genreId: widget.genre.id,
+                          genreName: widget.genre.name,
+                        ),
+                      );
+                    },
+                    child: const Text('Ver más'),
+                  ),
                 ],
               ),
             ),
-            if (genreState == PopularMovieState.loading && movies.isEmpty)
-              const _GenreShimmerList()
-            else if (genreState == PopularMovieState.failure &&
-                movies.isEmpty)
+              if (genreState == GenreMovieStatus.loading && movies.isEmpty)
+                const _GenreShimmerList()
+              else if (genreState == GenreMovieStatus.failure &&
+                  movies.isEmpty)
               Padding(
                 padding: const EdgeInsets.all(24.0),
                 child: Center(
@@ -178,9 +192,9 @@ class _GenreMoviesSectionContentState extends State<_GenreMoviesSectionContent> 
                   scrollDirection: Axis.horizontal,
                   physics: const BouncingScrollPhysics(),
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  itemCount:
-                      movies.length +
-                      (genreState == PopularMovieState.loading ? 1 : 0),
+                    itemCount:
+                        movies.length +
+                        (genreState == GenreMovieStatus.loading ? 1 : 0),
                   itemBuilder: (context, index) {
                     if (index >= movies.length) {
                       return const SizedBox(
@@ -208,23 +222,28 @@ class _GenreMovieCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 160,
-      height: 280,
-      margin: const EdgeInsets.only(right: 12.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.2),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Column(
+    return InkWell(
+      onTap: () {
+        context.router.push(MovieDetailRoute(movieId: movie.id));
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        width: 160,
+        height: 280,
+        margin: const EdgeInsets.only(right: 12.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.2),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
@@ -286,6 +305,7 @@ class _GenreMovieCard extends StatelessWidget {
               ),
             ),
           ],
+        ),
         ),
       ),
     );

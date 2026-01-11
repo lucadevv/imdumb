@@ -1,5 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:imdumb/core/injection/home/home_injection.dart';
+import 'package:imdumb/core/injection/movies_list/movies_list_injection.dart';
+import 'package:imdumb/core/injection/movie_detail/movie_detail_injection.dart';
 import 'package:imdumb/core/routes/app_router.dart';
 import 'package:imdumb/core/services/network/api_services.dart';
 import 'package:imdumb/core/services/network/dio_services_impl.dart';
@@ -29,5 +31,7 @@ class AppInjection {
 
   void _homeFeteaure() {
     HomeInjection(getIt: _getIt);
+    MoviesListInjection(getIt: _getIt);
+    MovieDetailInjection(getIt: _getIt);
   }
 }

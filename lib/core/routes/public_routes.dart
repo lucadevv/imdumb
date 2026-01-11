@@ -6,5 +6,7 @@ class PublicRoutes {
   static List<AutoRoute> getList() => [
     AutoRoute(page: SplashRoute.page, initial: true),
     AutoRoute(page: HomeRoute.page),
+    AutoRoute(page: MoviesListRoute.page),
+    AutoRoute(page: MovieDetailRoute.page),
   ];
 }

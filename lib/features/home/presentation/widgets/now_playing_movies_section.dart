@@ -1,10 +1,13 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:imdumb/core/routes/app_router.gr.dart';
 import 'package:imdumb/core/utils/extension/context_extension.dart';
 import 'package:imdumb/features/home/domain/entities/popular_movie_entity.dart';
-import 'package:imdumb/features/home/presentation/bloc/bloc/home_bloc.dart';
+import 'package:imdumb/features/home/presentation/bloc/now_playing_movies/now_playing_movies_bloc.dart';
+import 'package:imdumb/features/movies_list/domain/entities/movie_list_type.dart';
 
 class NowPlayingMoviesSection extends StatefulWidget {
   const NowPlayingMoviesSection({super.key});
@@ -31,12 +34,11 @@ class _NowPlayingMoviesSectionState extends State<NowPlayingMoviesSection> {
 
   void _onScroll() {
     if (_isBottom) {
-      final state = context.read<HomeBloc>().state;
-      if (state.hasMoreNowPlayingMovies &&
-          state.nowPlayingMovieState != PopularMovieState.loading) {
-        context.read<HomeBloc>().add(
-          FetchAllNowPlayingMovieEvent(
-            page: state.nowPlayingPage + 1,
+      final state = context.read<NowPlayingMoviesBloc>().state;
+      if (state.hasMore && state.status != NowPlayingMoviesStatus.loading) {
+        context.read<NowPlayingMoviesBloc>().add(
+          FetchNowPlayingMoviesEvent(
+            page: state.page + 1,
             isLoadMore: true,
           ),
         );
@@ -54,7 +56,7 @@ class _NowPlayingMoviesSectionState extends State<NowPlayingMoviesSection> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeBloc, HomeState>(
+    return BlocBuilder<NowPlayingMoviesBloc, NowPlayingMoviesState>(
       builder: (context, state) {
         return SliverToBoxAdapter(
           child: Column(
@@ -75,27 +77,32 @@ class _NowPlayingMoviesSectionState extends State<NowPlayingMoviesSection> {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    TextButton(onPressed: () {}, child: const Text('Ver más')),
+                    TextButton(
+                      onPressed: () {
+                        context.router.push(
+                          MoviesListRoute(type: MovieListType.nowPlaying),
+                        );
+                      },
+                      child: const Text('Ver más'),
+                    ),
                   ],
                 ),
               ),
-              if (state.nowPlayingMovieState == PopularMovieState.loading &&
-                  state.listNowPlayingMovie.isEmpty)
+              if (state.status == NowPlayingMoviesStatus.loading &&
+                  state.movies.isEmpty)
                 const _NowPlayingShimmerList()
-              else if (state.nowPlayingMovieState ==
-                      PopularMovieState.failure &&
-                  state.listNowPlayingMovie.isEmpty)
+              else if (state.status == NowPlayingMoviesStatus.failure &&
+                  state.movies.isEmpty)
                 Padding(
                   padding: const EdgeInsets.all(24.0),
                   child: Center(
                     child: Text(
-                      state.nowPlayingErrorMessage ??
-                          'Error al cargar las películas',
+                      state.errorMessage ?? 'Error al cargar las películas',
                       style: TextStyle(color: context.appColor.error),
                     ),
                   ),
                 )
-              else if (state.listNowPlayingMovie.isEmpty)
+              else if (state.movies.isEmpty)
                 const Padding(
                   padding: EdgeInsets.all(24.0),
                   child: Center(child: Text('No hay películas disponibles')),
@@ -108,20 +115,17 @@ class _NowPlayingMoviesSectionState extends State<NowPlayingMoviesSection> {
                     scrollDirection: Axis.horizontal,
                     physics: const BouncingScrollPhysics(),
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    itemCount:
-                        state.listNowPlayingMovie.length +
-                        (state.nowPlayingMovieState == PopularMovieState.loading
-                            ? 1
-                            : 0),
+                    itemCount: state.movies.length +
+                        (state.status == NowPlayingMoviesStatus.loading ? 1 : 0),
                     itemBuilder: (context, index) {
-                      if (index >= state.listNowPlayingMovie.length) {
+                      if (index >= state.movies.length) {
                         return const SizedBox(
                           width: 160,
                           height: 280,
                           child: Center(child: CircularProgressIndicator()),
                         );
                       }
-                      final movie = state.listNowPlayingMovie[index];
+                      final movie = state.movies[index];
                       return _NowPlayingMovieCard(movie: movie);
                     },
                   ),
@@ -141,23 +145,28 @@ class _NowPlayingMovieCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 160,
-      height: 280,
-      margin: const EdgeInsets.only(right: 12.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.2),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Column(
+    return InkWell(
+      onTap: () {
+        context.router.push(MovieDetailRoute(movieId: movie.id));
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        width: 160,
+        height: 280,
+        margin: const EdgeInsets.only(right: 12.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.2),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
@@ -219,6 +228,7 @@ class _NowPlayingMovieCard extends StatelessWidget {
               ),
             ),
           ],
+        ),
         ),
       ),
     );
