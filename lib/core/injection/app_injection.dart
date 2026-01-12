@@ -3,6 +3,10 @@ import 'package:imdumb/core/injection/home/home_injection.dart';
 import 'package:imdumb/core/injection/movies_list/movies_list_injection.dart';
 import 'package:imdumb/core/injection/movie_detail/movie_detail_injection.dart';
 import 'package:imdumb/core/routes/app_router.dart';
+import 'package:imdumb/core/services/firebase/remote_config_service.dart';
+import 'package:imdumb/core/services/firebase/remote_config_service_impl.dart';
+import 'package:imdumb/core/services/local/local_storage_service.dart';
+import 'package:imdumb/core/services/local/shared_preferences_service_impl.dart';
 import 'package:imdumb/core/services/network/api_services.dart';
 import 'package:imdumb/core/services/network/dio_services_impl.dart';
 
@@ -25,6 +29,12 @@ class AppInjection {
     _getIt.registerLazySingleton<AppRouter>(() => AppRouter());
     _getIt.registerLazySingleton<ApiServices>(
       () => DioApiServicesImpl(_baseUrl, accessToken: _accessToken),
+    );
+    _getIt.registerLazySingleton<RemoteConfigService>(
+      () => RemoteConfigServiceImpl(),
+    );
+    _getIt.registerLazySingleton<LocalStorageService>(
+      () => SharedPreferencesServiceImpl(),
     );
     _homeFeteaure();
   }

@@ -1,3 +1,5 @@
+import 'package:imdumb/core/utils/helpers/date_parser.dart';
+
 class PopularMovieDbModel {
   final bool? adult;
   final String? backdropPath;
@@ -76,21 +78,10 @@ class PopularMovieDbModel {
         overview: json["overview"],
         popularity: json["popularity"]?.toDouble(),
         posterPath: json["poster_path"],
-        releaseDate: _parseReleaseDate(json["release_date"]),
+        releaseDate: DateParser.parseReleaseDate(json["release_date"]),
         title: json["title"],
         video: json["video"],
         voteAverage: json["vote_average"]?.toDouble(),
         voteCount: json["vote_count"],
       );
-
-  static DateTime? _parseReleaseDate(dynamic releaseDate) {
-    if (releaseDate == null) return null;
-    if (releaseDate is! String) return null;
-    if (releaseDate.isEmpty) return null;
-    try {
-      return DateTime.parse(releaseDate);
-    } catch (e) {
-      return null;
-    }
-  }
 }

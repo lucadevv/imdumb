@@ -1,11 +1,12 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shimmer/shimmer.dart';
+import 'package:imdumb/core/widgets/molecules/empty_state.dart';
+import 'package:imdumb/core/widgets/molecules/error_state.dart';
+import 'package:imdumb/core/widgets/molecules/movie_poster_card.dart';
+import 'package:imdumb/core/widgets/molecules/shimmer_list.dart';
 import 'package:imdumb/core/routes/app_router.gr.dart';
 import 'package:imdumb/core/utils/extension/context_extension.dart';
-import 'package:imdumb/features/home/domain/entities/popular_movie_entity.dart';
 import 'package:imdumb/features/home/domain/entities/genre_entity.dart';
 import 'package:imdumb/features/home/presentation/bloc/genres/genres_bloc.dart';
 import 'package:imdumb/features/home/presentation/bloc/genre_movies/genre_movies_bloc.dart';
@@ -41,16 +42,13 @@ class GenreMoviesSections extends StatelessWidget {
         }
 
         return SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (context, index) {
-              final genre = state.genres[index];
-              return _GenreMoviesSectionContent(
-                genre: genre,
-                key: ValueKey(genre.id),
-              );
-            },
-            childCount: state.genres.length,
-          ),
+          delegate: SliverChildBuilderDelegate((context, index) {
+            final genre = state.genres[index];
+            return _GenreMoviesSectionContent(
+              genre: genre,
+              key: ValueKey(genre.id),
+            );
+          }, childCount: state.genres.length),
         );
       },
     );
@@ -63,10 +61,12 @@ class _GenreMoviesSectionContent extends StatefulWidget {
   const _GenreMoviesSectionContent({super.key, required this.genre});
 
   @override
-  State<_GenreMoviesSectionContent> createState() => _GenreMoviesSectionContentState();
+  State<_GenreMoviesSectionContent> createState() =>
+      _GenreMoviesSectionContentState();
 }
 
-class _GenreMoviesSectionContentState extends State<_GenreMoviesSectionContent> {
+class _GenreMoviesSectionContentState
+    extends State<_GenreMoviesSectionContent> {
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -166,23 +166,19 @@ class _GenreMoviesSectionContentState extends State<_GenreMoviesSectionContent> 
                 ],
               ),
             ),
-              if (genreState == GenreMovieStatus.loading && movies.isEmpty)
-                const _GenreShimmerList()
-              else if (genreState == GenreMovieStatus.failure &&
-                  movies.isEmpty)
+            if (genreState == GenreMovieStatus.loading && movies.isEmpty)
+              const ShimmerList()
+            else if (genreState == GenreMovieStatus.failure && movies.isEmpty)
               Padding(
                 padding: const EdgeInsets.all(24.0),
-                child: Center(
-                  child: Text(
-                    errorMessage ?? 'Error al cargar las películas',
-                    style: TextStyle(color: context.appColor.error),
-                  ),
+                child: ErrorState(
+                  errorMessage: errorMessage ?? 'Error al cargar las películas',
                 ),
               )
             else if (movies.isEmpty)
               const Padding(
                 padding: EdgeInsets.all(24.0),
-                child: Center(child: Text('No hay películas disponibles')),
+                child: EmptyState(message: 'No hay películas disponibles'),
               )
             else
               SizedBox(
@@ -192,9 +188,9 @@ class _GenreMoviesSectionContentState extends State<_GenreMoviesSectionContent> 
                   scrollDirection: Axis.horizontal,
                   physics: const BouncingScrollPhysics(),
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    itemCount:
-                        movies.length +
-                        (genreState == GenreMovieStatus.loading ? 1 : 0),
+                  itemCount:
+                      movies.length +
+                      (genreState == GenreMovieStatus.loading ? 1 : 0),
                   itemBuilder: (context, index) {
                     if (index >= movies.length) {
                       return const SizedBox(
@@ -204,145 +200,13 @@ class _GenreMoviesSectionContentState extends State<_GenreMoviesSectionContent> 
                       );
                     }
                     final movie = movies[index];
-                    return _GenreMovieCard(movie: movie);
+                    return MoviePosterCard(movie: movie);
                   },
                 ),
               ),
           ],
         );
       },
-    );
-  }
-}
-
-class _GenreMovieCard extends StatelessWidget {
-  final PopularMovieEntity movie;
-
-  const _GenreMovieCard({required this.movie});
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        context.router.push(MovieDetailRoute(movieId: movie.id));
-      },
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        width: 160,
-        height: 280,
-        margin: const EdgeInsets.only(right: 12.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.2),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  if (movie.posterThumbnail != null)
-                    CachedNetworkImage(
-                      imageUrl: movie.posterThumbnail!,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Container(
-                        color: context.appColor.surfaceContainer,
-                        child: const Center(child: CircularProgressIndicator()),
-                      ),
-                      errorWidget: (context, url, error) => Container(
-                        color: context.appColor.surfaceContainer,
-                        child: const Icon(Icons.movie),
-                      ),
-                    )
-                  else
-                    Container(
-                      color: context.appColor.surfaceContainer,
-                      child: const Icon(Icons.movie, size: 48),
-                    ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    movie.title,
-                    style: TextStyle(
-                      color: context.appColor.onSurface,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Icon(Icons.star, color: Colors.amber, size: 14),
-                      const SizedBox(width: 4),
-                      Text(
-                        movie.formattedVoteAverage,
-                        style: TextStyle(
-                          color: context.appColor.onSurfaceVariant,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        ),
-      ),
-    );
-  }
-}
-
-class _GenreShimmerList extends StatelessWidget {
-  const _GenreShimmerList();
-
-  @override
-  Widget build(BuildContext context) {
-    final appColor = context.appColor;
-
-    return SizedBox(
-      height: 280,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        itemCount: 5,
-        itemBuilder: (context, index) {
-          return Container(
-            width: 160,
-            height: 280,
-            margin: const EdgeInsets.only(right: 12.0),
-            child: Shimmer.fromColors(
-              baseColor: appColor.surfaceContainer,
-              highlightColor: appColor.surfaceContainerHigh,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: appColor.surfaceContainer,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
-          );
-        },
-      ),
     );
   }
 }

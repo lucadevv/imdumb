@@ -26,7 +26,6 @@ class BackgroundImageWidget extends StatelessWidget {
 
     final screenWidth = context.screenWidth;
     final screenHeight = context.screenHeight;
-    final aspectRatio = screenHeight / screenWidth;
     final backgroundHeight = screenHeight * 0.7;
 
     return Positioned(

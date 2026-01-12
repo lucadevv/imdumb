@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:imdumb/core/bloc/base_bloc_mixin.dart';
 import 'package:imdumb/core/utils/constans/app_language.dart';
 import 'package:imdumb/core/utils/exeptions/app_exceptions.dart';
 import 'package:imdumb/features/home/domain/entities/popular_movie_entity.dart';
@@ -10,7 +11,8 @@ import 'package:imdumb/features/home/domain/use_cases/fetch_movies_by_genre_usec
 part 'genre_movies_event.dart';
 part 'genre_movies_state.dart';
 
-class GenreMoviesBloc extends Bloc<GenreMoviesEvent, GenreMoviesState> {
+class GenreMoviesBloc extends Bloc<GenreMoviesEvent, GenreMoviesState>
+    with BaseBlocMixin {
   final FetchMoviesByGenreUsecase _fetchMoviesByGenreUsecase;
 
   GenreMoviesBloc({
@@ -64,7 +66,7 @@ class GenreMoviesBloc extends Bloc<GenreMoviesEvent, GenreMoviesState> {
 
     await response.fold(
       (failure) async {
-        String errorMessage = _getErrorMessage(failure);
+        String errorMessage = getErrorMessage(failure);
         final updatedMovieStates =
             Map<int, GenreMovieStatus>.from(state.movieStates);
         updatedMovieStates[event.genreId] = GenreMovieStatus.failure;
@@ -110,9 +112,5 @@ class GenreMoviesBloc extends Bloc<GenreMoviesEvent, GenreMoviesState> {
         );
       },
     );
-  }
-
-  String _getErrorMessage(AppException exception) {
-    return exception.message;
   }
 }

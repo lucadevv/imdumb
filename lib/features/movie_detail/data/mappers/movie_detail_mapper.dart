@@ -1,4 +1,5 @@
 import 'package:imdumb/core/utils/exeptions/mapper_exeption.dart';
+import 'package:imdumb/core/utils/helpers/date_parser.dart';
 import 'package:imdumb/features/movie_detail/data/models/movie_detail_db_model.dart';
 import 'package:imdumb/features/movie_detail/domain/entities/movie_detail_entity.dart';
 
@@ -12,7 +13,7 @@ class MovieDetailMapper {
       overview: model.overview ?? '',
       voteAverage: model.voteAverage ?? 0.0,
       voteCount: model.voteCount ?? 0,
-      releaseDate: _parseReleaseDate(model.releaseDate),
+      releaseDate: DateParser.parseReleaseDate(model.releaseDate),
       backdropPath: model.backdropPath,
       posterPath: model.posterPath,
       runtime: model.runtime,
@@ -23,18 +24,6 @@ class MovieDetailMapper {
               .toList() ??
           [],
     );
-  }
-
-  static DateTime? _parseReleaseDate(String? dateString) {
-    if (dateString == null || dateString.isEmpty) {
-      return null;
-    }
-
-    try {
-      return DateTime.parse(dateString);
-    } catch (e) {
-      return null;
-    }
   }
 
   static void _validateRequiredFields(MovieDetailDbModel model) {

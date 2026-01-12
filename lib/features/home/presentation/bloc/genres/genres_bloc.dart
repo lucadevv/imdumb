@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:imdumb/core/bloc/base_bloc_mixin.dart';
 import 'package:imdumb/core/utils/constans/app_language.dart';
 import 'package:imdumb/core/utils/exeptions/app_exceptions.dart';
 import 'package:imdumb/features/home/domain/entities/genre_entity.dart';
@@ -10,7 +11,7 @@ import 'package:imdumb/features/home/domain/use_cases/fetch_all_genres_usecase.d
 part 'genres_event.dart';
 part 'genres_state.dart';
 
-class GenresBloc extends Bloc<GenresEvent, GenresState> {
+class GenresBloc extends Bloc<GenresEvent, GenresState> with BaseBlocMixin {
   final FetchAllGenresUsecase _fetchAllGenresUsecase;
 
   GenresBloc({
@@ -36,7 +37,7 @@ class GenresBloc extends Bloc<GenresEvent, GenresState> {
 
     await response.fold(
       (failure) async {
-        String errorMessage = _getErrorMessage(failure);
+        String errorMessage = getErrorMessage(failure);
         emit(
           state.copyWith(
             status: GenresStatus.failure,
@@ -54,9 +55,5 @@ class GenresBloc extends Bloc<GenresEvent, GenresState> {
         );
       },
     );
-  }
-
-  String _getErrorMessage(AppException exception) {
-    return exception.message;
   }
 }

@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:imdumb/core/routes/app_router.gr.dart';
 import 'package:imdumb/core/utils/extension/context_extension.dart';
+import 'package:imdumb/core/widgets/molecules/error_state.dart';
 import 'package:imdumb/features/home/presentation/bloc/genres/genres_bloc.dart';
 import 'package:imdumb/features/movies_list/domain/entities/movie_list_type.dart';
 
@@ -46,27 +47,15 @@ class GenresDrawer extends StatelessWidget {
                       }
 
                       if (state.status == GenresStatus.failure) {
-                        return Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                state.errorMessage ??
-                                    'Error al cargar los géneros',
-                                style: TextStyle(color: context.appColor.error),
-                                textAlign: TextAlign.center,
-                              ),
-                              const SizedBox(height: 16),
-                              ElevatedButton(
-                                onPressed: () {
-                                  context.read<GenresBloc>().add(
-                                    const FetchGenresEvent(),
-                                  );
-                                },
-                                child: const Text('Reintentar'),
-                              ),
-                            ],
-                          ),
+                        return ErrorState(
+                          errorMessage:
+                              state.errorMessage ??
+                              'Error al cargar los géneros',
+                          onRetry: () {
+                            context.read<GenresBloc>().add(
+                              const FetchGenresEvent(),
+                            );
+                          },
                         );
                       }
 

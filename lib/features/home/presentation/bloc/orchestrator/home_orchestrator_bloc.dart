@@ -11,6 +11,12 @@ import 'package:imdumb/features/home/presentation/bloc/genre_movies/genre_movies
 part 'home_orchestrator_event.dart';
 part 'home_orchestrator_state.dart';
 
+/// SOLID: Single Responsibility Principle (SRP)
+/// 
+/// Este bloc tiene una única responsabilidad: orquestar la carga de datos
+/// de todos los blocs relacionados con la pantalla home.
+/// No carga datos directamente, solo coordina cuando cada bloc debe cargar
+/// sus propios datos, manteniendo una separación clara de responsabilidades.
 class HomeOrchestratorBloc
     extends Bloc<HomeOrchestratorEvent, HomeOrchestratorState> {
   final PopularMoviesBloc _popularMoviesBloc;

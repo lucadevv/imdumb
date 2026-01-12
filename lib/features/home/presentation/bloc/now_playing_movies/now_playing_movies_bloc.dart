@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:imdumb/core/bloc/base_bloc_mixin.dart';
 import 'package:imdumb/core/utils/constans/app_language.dart';
 import 'package:imdumb/core/utils/exeptions/app_exceptions.dart';
 import 'package:imdumb/features/home/domain/entities/popular_movie_entity.dart';
@@ -11,7 +12,8 @@ part 'now_playing_movies_event.dart';
 part 'now_playing_movies_state.dart';
 
 class NowPlayingMoviesBloc
-    extends Bloc<NowPlayingMoviesEvent, NowPlayingMoviesState> {
+    extends Bloc<NowPlayingMoviesEvent, NowPlayingMoviesState>
+    with BaseBlocMixin {
   final FetchAllNowPlayingMovieUsecase _fetchAllNowPlayingMovieUsecase;
 
   NowPlayingMoviesBloc({
@@ -48,7 +50,7 @@ class NowPlayingMoviesBloc
 
     await response.fold(
       (failure) async {
-        String errorMessage = _getErrorMessage(failure);
+        String errorMessage = getErrorMessage(failure);
         emit(
           state.copyWith(
             status: NowPlayingMoviesStatus.failure,
@@ -73,9 +75,5 @@ class NowPlayingMoviesBloc
         );
       },
     );
-  }
-
-  String _getErrorMessage(AppException exception) {
-    return exception.message;
   }
 }

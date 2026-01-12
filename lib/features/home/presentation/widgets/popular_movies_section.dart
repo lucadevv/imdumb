@@ -3,7 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shimmer/shimmer.dart';
+import 'package:imdumb/core/widgets/molecules/shimmer_carousel.dart';
 import 'package:imdumb/core/routes/app_router.gr.dart';
 import 'package:imdumb/core/utils/extension/context_extension.dart';
 import 'package:imdumb/features/home/domain/entities/popular_movie_entity.dart';
@@ -41,7 +41,7 @@ class _PopularMoviesSectionState extends State<PopularMoviesSection> {
                 ),
               ),
               if (state.status == PopularMoviesStatus.loading)
-                _ShimmerCarousel(height: carouselHeight)
+                ShimmerCarousel(height: carouselHeight)
               else if (state.status == PopularMoviesStatus.failure)
                 Padding(
                   padding: const EdgeInsets.all(24.0),
@@ -94,44 +94,6 @@ class _PopularMoviesSectionState extends State<PopularMoviesSection> {
           ),
         );
       },
-    );
-  }
-}
-
-class _ShimmerCarousel extends StatelessWidget {
-  final double height;
-
-  const _ShimmerCarousel({required this.height});
-
-  @override
-  Widget build(BuildContext context) {
-    final appColor = context.appColor;
-    final screenWidth = context.screenWidth;
-    final cardWidth = screenWidth * 0.8;
-
-    return SizedBox(
-      height: height,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        itemCount: 3,
-        itemBuilder: (context, index) {
-          return Container(
-            width: cardWidth,
-            margin: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Shimmer.fromColors(
-              baseColor: appColor.surfaceContainer,
-              highlightColor: appColor.surfaceContainerHigh,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: appColor.surfaceContainer,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-              ),
-            ),
-          );
-        },
-      ),
     );
   }
 }

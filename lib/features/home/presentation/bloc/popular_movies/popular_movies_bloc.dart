@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:imdumb/core/bloc/base_bloc_mixin.dart';
 import 'package:imdumb/core/utils/constans/app_language.dart';
 import 'package:imdumb/core/utils/exeptions/app_exceptions.dart';
 import 'package:imdumb/features/home/domain/entities/popular_movie_entity.dart';
@@ -10,7 +11,8 @@ import 'package:imdumb/features/home/domain/use_cases/fetch_all_popular_movie_us
 part 'popular_movies_event.dart';
 part 'popular_movies_state.dart';
 
-class PopularMoviesBloc extends Bloc<PopularMoviesEvent, PopularMoviesState> {
+class PopularMoviesBloc extends Bloc<PopularMoviesEvent, PopularMoviesState>
+    with BaseBlocMixin {
   final FetchAllPopularMovieUsecase _fetchAllPopularMovieUsecase;
 
   PopularMoviesBloc({
@@ -37,7 +39,7 @@ class PopularMoviesBloc extends Bloc<PopularMoviesEvent, PopularMoviesState> {
 
     await response.fold(
       (failure) async {
-        String errorMessage = _getErrorMessage(failure);
+        String errorMessage = getErrorMessage(failure);
         emit(
           state.copyWith(
             status: PopularMoviesStatus.failure,
@@ -55,9 +57,5 @@ class PopularMoviesBloc extends Bloc<PopularMoviesEvent, PopularMoviesState> {
         );
       },
     );
-  }
-
-  String _getErrorMessage(AppException exception) {
-    return exception.message;
   }
 }

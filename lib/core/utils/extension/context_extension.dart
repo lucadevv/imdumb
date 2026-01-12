@@ -8,4 +8,5 @@ extension BuildContextX on BuildContext {
   TextTheme get appTextTheme => _theme.textTheme;
   double get screenWidth => size.width;
   double get screenHeight => size.height;
+  double get viewInsetsBottom => MediaQuery.viewInsetsOf(this).bottom;
 }

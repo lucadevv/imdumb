@@ -1,6 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:imdumb/core/services/network/api_services.dart';
 
+/// SOLID: Open/Closed Principle (OCP)
+/// 
+/// Esta clase está abierta para extensión (puede agregar nuevas funcionalidades)
+/// pero cerrada para modificación. Si necesitamos cambiar la implementación HTTP,
+/// podemos crear otra clase que implemente ApiServices sin modificar esta.
+/// La clase usa la abstracción ApiServices y puede ser reemplazada fácilmente.
 class DioApiServicesImpl implements ApiServices {
   final Dio _dio;
   final String? _accessToken;
