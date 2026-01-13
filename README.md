@@ -8,12 +8,11 @@ Aplicación Flutter para explorar y descubrir películas usando la API de The Mo
 
 <div align="center">
 
-<!-- Reproductor de YouTube -->
+<!-- Intento de reproductor embebido - GitHub puede bloquear iframes por seguridad -->
 <iframe 
   width="560" 
   height="315" 
-  src="https://www.youtube.com/embed/Mk6F0GnuFbc" 
-  title="IMDUMB - Demo de Aplicación Flutter" 
+  src="https://drive.google.com/file/d/1kIsLutqLZHdwF64WpX2xMg_SYSHaloW_/preview" 
   frameborder="0" 
   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
   allowfullscreen
@@ -23,15 +22,16 @@ Aplicación Flutter para explorar y descubrir películas usando la API de The Mo
 </div>
 
 <div align="center" style="margin-top: 20px;">
-  <a href="https://www.youtube.com/watch?v=Mk6F0GnuFbc" target="_blank">
-    <img src="https://img.shields.io/badge/▶️-Reproducir%20en%20YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="Reproducir en YouTube" />
+  <a href="https://drive.google.com/file/d/1kIsLutqLZHdwF64WpX2xMg_SYSHaloW_/view?usp=sharing&t=115">
+    <img src="https://img.shields.io/badge/▶️-Reproducir%20Video%20Completo-FF0000?style=for-the-badge&logo=google-drive" alt="Reproducir Video Completo" />
   </a>
   <a href="https://drive.google.com/file/d/1JLzSzYA-smK34KZ1JKMBcdQ--nOwK0xZ/view?usp=drive_link">
     <img src="https://img.shields.io/badge/📱-Descargar%20APK-00C853?style=for-the-badge&logo=android" alt="Descargar APK" />
   </a>
 </div>
 
-> **Nota:** El video de demostración muestra todas las funcionalidades principales de la aplicación IMDUMB.
+> **Nota sobre el reproductor:** Si el reproductor embebido no se muestra (GitHub bloquea iframes por seguridad), haz clic en el botón "Reproducir Video Completo" arriba para ver el video en Google Drive.
+
 **Enlaces directos:**
 - 👉 [Ver video completo de demostración](https://drive.google.com/file/d/1kIsLutqLZHdwF64WpX2xMg_SYSHaloW_/view?usp=sharing&t=115)
 - 📱 [Descargar APK para Android](https://drive.google.com/file/d/1JLzSzYA-smK34KZ1JKMBcdQ--nOwK0xZ/view?usp=drive_link)
