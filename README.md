@@ -6,11 +6,35 @@ Aplicación Flutter para explorar y descubrir películas usando la API de The Mo
 
 **Ver la aplicación en acción:**
 
-[![Video de Demostración](https://img.shields.io/badge/🎥-Ver%20Video%20de%20Demostración-red?style=for-the-badge)](https://drive.google.com/file/d/1kIsLutqLZHdwF64WpX2xMg_SYSHaloW_/view?usp=sharing&t=115)
+<div align="center">
 
-👉 [Ver video completo de demostración](https://drive.google.com/file/d/1kIsLutqLZHdwF64WpX2xMg_SYSHaloW_/view?usp=sharing&t=115)
+<!-- Intento de reproductor embebido - GitHub puede bloquear iframes por seguridad -->
+<iframe 
+  width="560" 
+  height="315" 
+  src="https://drive.google.com/file/d/1kIsLutqLZHdwF64WpX2xMg_SYSHaloW_/preview" 
+  frameborder="0" 
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+  allowfullscreen
+  style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+</iframe>
 
-📱 [Descargar APK para Android](https://drive.google.com/file/d/1JLzSzYA-smK34KZ1JKMBcdQ--nOwK0xZ/view?usp=drive_link)
+</div>
+
+<div align="center" style="margin-top: 20px;">
+  <a href="https://drive.google.com/file/d/1kIsLutqLZHdwF64WpX2xMg_SYSHaloW_/view?usp=sharing&t=115">
+    <img src="https://img.shields.io/badge/▶️-Reproducir%20Video%20Completo-FF0000?style=for-the-badge&logo=google-drive" alt="Reproducir Video Completo" />
+  </a>
+  <a href="https://drive.google.com/file/d/1JLzSzYA-smK34KZ1JKMBcdQ--nOwK0xZ/view?usp=drive_link">
+    <img src="https://img.shields.io/badge/📱-Descargar%20APK-00C853?style=for-the-badge&logo=android" alt="Descargar APK" />
+  </a>
+</div>
+
+> **Nota sobre el reproductor:** Si el reproductor embebido no se muestra (GitHub bloquea iframes por seguridad), haz clic en el botón "Reproducir Video Completo" arriba para ver el video en Google Drive.
+
+**Enlaces directos:**
+- 👉 [Ver video completo de demostración](https://drive.google.com/file/d/1kIsLutqLZHdwF64WpX2xMg_SYSHaloW_/view?usp=sharing&t=115)
+- 📱 [Descargar APK para Android](https://drive.google.com/file/d/1JLzSzYA-smK34KZ1JKMBcdQ--nOwK0xZ/view?usp=drive_link)
 
 ---
 
@@ -160,6 +184,8 @@ dev_dependencies:
 3. **Configurar variables de entorno (OBLIGATORIO)**
 
    El proyecto usa `dart-define` para configuraciones. **DEBES crear un archivo `env.json` en la raíz del proyecto** antes de ejecutar la aplicación.
+   
+   **⚠️ IMPORTANTE:** El archivo `env.json` NO está incluido en el repositorio (está en `.gitignore` por seguridad). Debes crearlo localmente.
    
    **Crear archivo env.json:**
    
