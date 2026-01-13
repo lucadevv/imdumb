@@ -7,21 +7,6 @@ Aplicación Flutter para explorar y descubrir películas usando la API de The Mo
 **Ver la aplicación en acción:**
 
 <div align="center">
-
-<!-- Intento de reproductor embebido - GitHub puede bloquear iframes por seguridad -->
-<iframe 
-  width="560" 
-  height="315" 
-  src="https://drive.google.com/file/d/1kIsLutqLZHdwF64WpX2xMg_SYSHaloW_/preview" 
-  frameborder="0" 
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-  allowfullscreen
-  style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-</iframe>
-
-</div>
-
-<div align="center" style="margin-top: 20px;">
   <a href="https://drive.google.com/file/d/1kIsLutqLZHdwF64WpX2xMg_SYSHaloW_/view?usp=sharing&t=115">
     <img src="https://img.shields.io/badge/▶️-Reproducir%20Video%20Completo-FF0000?style=for-the-badge&logo=google-drive" alt="Reproducir Video Completo" />
   </a>
@@ -30,11 +15,21 @@ Aplicación Flutter para explorar y descubrir películas usando la API de The Mo
   </a>
 </div>
 
-> **Nota sobre el reproductor:** Si el reproductor embebido no se muestra (GitHub bloquea iframes por seguridad), haz clic en el botón "Reproducir Video Completo" arriba para ver el video en Google Drive.
-
 **Enlaces directos:**
 - 👉 [Ver video completo de demostración](https://drive.google.com/file/d/1kIsLutqLZHdwF64WpX2xMg_SYSHaloW_/view?usp=sharing&t=115)
 - 📱 [Descargar APK para Android](https://drive.google.com/file/d/1JLzSzYA-smK34KZ1JKMBcdQ--nOwK0xZ/view?usp=drive_link)
+
+## 📸 Capturas de Pantalla
+
+<div align="center">
+  <img src="assets/png/1.png" alt="Captura 1" width="200" style="margin: 5px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" />
+  <img src="assets/png/2.png" alt="Captura 2" width="200" style="margin: 5px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" />
+  <img src="assets/png/3.png" alt="Captura 3" width="200" style="margin: 5px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" />
+  <img src="assets/png/4.png" alt="Captura 4" width="200" style="margin: 5px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" />
+  <img src="assets/png/5.png" alt="Captura 5" width="200" style="margin: 5px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" />
+  <img src="assets/png/6.png" alt="Captura 6" width="200" style="margin: 5px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" />
+  <img src="assets/png/7.png" alt="Captura 7" width="200" style="margin: 5px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" />
+</div>
 
 ---
 
