@@ -9,40 +9,41 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:auto_route/auto_route.dart' as _i5;
-import 'package:flutter/material.dart' as _i6;
+import 'package:auto_route/auto_route.dart' as _i6;
+import 'package:flutter/material.dart' as _i7;
 import 'package:imdumb/features/home/presentation/home_screen.dart' as _i1;
 import 'package:imdumb/features/movie_detail/presentation/movie_detail_screen.dart'
     as _i2;
 import 'package:imdumb/features/movies_list/domain/entities/movie_list_type.dart'
-    as _i7;
+    as _i8;
 import 'package:imdumb/features/movies_list/presentation/movies_list_screen.dart'
     as _i3;
-import 'package:imdumb/features/splash/presentation/splash_screen.dart' as _i4;
+import 'package:imdumb/features/search/presentation/search_screen.dart' as _i4;
+import 'package:imdumb/features/splash/presentation/splash_screen.dart' as _i5;
 
 /// generated route for
 /// [_i1.HomeScreen]
-class HomeRoute extends _i5.PageRouteInfo<void> {
-  const HomeRoute({List<_i5.PageRouteInfo>? children})
+class HomeRoute extends _i6.PageRouteInfo<void> {
+  const HomeRoute({List<_i6.PageRouteInfo>? children})
     : super(HomeRoute.name, initialChildren: children);
 
   static const String name = 'HomeRoute';
 
-  static _i5.PageInfo page = _i5.PageInfo(
+  static _i6.PageInfo page = _i6.PageInfo(
     name,
     builder: (data) {
-      return _i5.WrappedRoute(child: const _i1.HomeScreen());
+      return _i6.WrappedRoute(child: const _i1.HomeScreen());
     },
   );
 }
 
 /// generated route for
 /// [_i2.MovieDetailScreen]
-class MovieDetailRoute extends _i5.PageRouteInfo<MovieDetailRouteArgs> {
+class MovieDetailRoute extends _i6.PageRouteInfo<MovieDetailRouteArgs> {
   MovieDetailRoute({
-    _i6.Key? key,
+    _i7.Key? key,
     required int movieId,
-    List<_i5.PageRouteInfo>? children,
+    List<_i6.PageRouteInfo>? children,
   }) : super(
          MovieDetailRoute.name,
          args: MovieDetailRouteArgs(key: key, movieId: movieId),
@@ -51,11 +52,11 @@ class MovieDetailRoute extends _i5.PageRouteInfo<MovieDetailRouteArgs> {
 
   static const String name = 'MovieDetailRoute';
 
-  static _i5.PageInfo page = _i5.PageInfo(
+  static _i6.PageInfo page = _i6.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<MovieDetailRouteArgs>();
-      return _i5.WrappedRoute(
+      return _i6.WrappedRoute(
         child: _i2.MovieDetailScreen(key: args.key, movieId: args.movieId),
       );
     },
@@ -65,7 +66,7 @@ class MovieDetailRoute extends _i5.PageRouteInfo<MovieDetailRouteArgs> {
 class MovieDetailRouteArgs {
   const MovieDetailRouteArgs({this.key, required this.movieId});
 
-  final _i6.Key? key;
+  final _i7.Key? key;
 
   final int movieId;
 
@@ -87,13 +88,13 @@ class MovieDetailRouteArgs {
 
 /// generated route for
 /// [_i3.MoviesListScreen]
-class MoviesListRoute extends _i5.PageRouteInfo<MoviesListRouteArgs> {
+class MoviesListRoute extends _i6.PageRouteInfo<MoviesListRouteArgs> {
   MoviesListRoute({
-    _i6.Key? key,
-    required _i7.MovieListType type,
+    _i7.Key? key,
+    required _i8.MovieListType type,
     int? genreId,
     String? genreName,
-    List<_i5.PageRouteInfo>? children,
+    List<_i6.PageRouteInfo>? children,
   }) : super(
          MoviesListRoute.name,
          args: MoviesListRouteArgs(
@@ -107,11 +108,11 @@ class MoviesListRoute extends _i5.PageRouteInfo<MoviesListRouteArgs> {
 
   static const String name = 'MoviesListRoute';
 
-  static _i5.PageInfo page = _i5.PageInfo(
+  static _i6.PageInfo page = _i6.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<MoviesListRouteArgs>();
-      return _i5.WrappedRoute(
+      return _i6.WrappedRoute(
         child: _i3.MoviesListScreen(
           key: args.key,
           type: args.type,
@@ -131,9 +132,9 @@ class MoviesListRouteArgs {
     this.genreName,
   });
 
-  final _i6.Key? key;
+  final _i7.Key? key;
 
-  final _i7.MovieListType type;
+  final _i8.MovieListType type;
 
   final int? genreId;
 
@@ -160,17 +161,33 @@ class MoviesListRouteArgs {
 }
 
 /// generated route for
-/// [_i4.SplashScreen]
-class SplashRoute extends _i5.PageRouteInfo<void> {
-  const SplashRoute({List<_i5.PageRouteInfo>? children})
+/// [_i4.SearchScreen]
+class SearchRoute extends _i6.PageRouteInfo<void> {
+  const SearchRoute({List<_i6.PageRouteInfo>? children})
+    : super(SearchRoute.name, initialChildren: children);
+
+  static const String name = 'SearchRoute';
+
+  static _i6.PageInfo page = _i6.PageInfo(
+    name,
+    builder: (data) {
+      return _i6.WrappedRoute(child: const _i4.SearchScreen());
+    },
+  );
+}
+
+/// generated route for
+/// [_i5.SplashScreen]
+class SplashRoute extends _i6.PageRouteInfo<void> {
+  const SplashRoute({List<_i6.PageRouteInfo>? children})
     : super(SplashRoute.name, initialChildren: children);
 
   static const String name = 'SplashRoute';
 
-  static _i5.PageInfo page = _i5.PageInfo(
+  static _i6.PageInfo page = _i6.PageInfo(
     name,
     builder: (data) {
-      return const _i4.SplashScreen();
+      return const _i5.SplashScreen();
     },
   );
 }

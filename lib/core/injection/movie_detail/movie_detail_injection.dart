@@ -8,7 +8,6 @@ import 'package:imdumb/features/movie_detail/domain/use_cases/fetch_credit_detai
 import 'package:imdumb/features/movie_detail/domain/use_cases/fetch_movie_credits_usecase.dart';
 import 'package:imdumb/features/movie_detail/domain/use_cases/fetch_movie_detail_usecase.dart';
 import 'package:imdumb/features/movie_detail/domain/use_cases/fetch_movie_images_usecase.dart';
-import 'package:imdumb/main.dart';
 
 class MovieDetailInjection {
   final GetIt _getIt;
@@ -18,23 +17,45 @@ class MovieDetailInjection {
   }
 
   void _init() {
-    _getIt.registerLazySingleton<MovieDetailDatasource>(
-      () => MovieDetailDatasourceNtwImpl(services: getIt<ApiServices>()),
-    );
-    _getIt.registerLazySingleton<MovieDetailRepository>(
-      () => MovieDetailRepositoryImpl(datasource: getIt<MovieDetailDatasource>()),
-    );
-    _getIt.registerLazySingleton<FetchMovieDetailUsecase>(
-      () => FetchMovieDetailUsecase(repository: getIt<MovieDetailRepository>()),
-    );
-    _getIt.registerLazySingleton<FetchMovieImagesUsecase>(
-      () => FetchMovieImagesUsecase(repository: getIt<MovieDetailRepository>()),
-    );
-    _getIt.registerLazySingleton<FetchMovieCreditsUsecase>(
-      () => FetchMovieCreditsUsecase(repository: getIt<MovieDetailRepository>()),
-    );
-    _getIt.registerLazySingleton<FetchCreditDetailUsecase>(
-      () => FetchCreditDetailUsecase(repository: getIt<MovieDetailRepository>()),
-    );
+    if (!_getIt.isRegistered<MovieDetailDatasource>()) {
+      _getIt.registerLazySingleton<MovieDetailDatasource>(
+        () => MovieDetailDatasourceNtwImpl(services: _getIt<ApiServices>()),
+      );
+    }
+    if (!_getIt.isRegistered<MovieDetailRepository>()) {
+      _getIt.registerLazySingleton<MovieDetailRepository>(
+        () => MovieDetailRepositoryImpl(
+          datasource: _getIt<MovieDetailDatasource>(),
+        ),
+      );
+    }
+    if (!_getIt.isRegistered<FetchMovieDetailUsecase>()) {
+      _getIt.registerLazySingleton<FetchMovieDetailUsecase>(
+        () => FetchMovieDetailUsecase(
+          repository: _getIt<MovieDetailRepository>(),
+        ),
+      );
+    }
+    if (!_getIt.isRegistered<FetchMovieImagesUsecase>()) {
+      _getIt.registerLazySingleton<FetchMovieImagesUsecase>(
+        () => FetchMovieImagesUsecase(
+          repository: _getIt<MovieDetailRepository>(),
+        ),
+      );
+    }
+    if (!_getIt.isRegistered<FetchMovieCreditsUsecase>()) {
+      _getIt.registerLazySingleton<FetchMovieCreditsUsecase>(
+        () => FetchMovieCreditsUsecase(
+          repository: _getIt<MovieDetailRepository>(),
+        ),
+      );
+    }
+    if (!_getIt.isRegistered<FetchCreditDetailUsecase>()) {
+      _getIt.registerLazySingleton<FetchCreditDetailUsecase>(
+        () => FetchCreditDetailUsecase(
+          repository: _getIt<MovieDetailRepository>(),
+        ),
+      );
+    }
   }
 }

@@ -8,5 +8,6 @@ class PublicRoutes {
     AutoRoute(page: HomeRoute.page),
     AutoRoute(page: MoviesListRoute.page),
     AutoRoute(page: MovieDetailRoute.page),
+    AutoRoute(page: SearchRoute.page),
   ];
 }

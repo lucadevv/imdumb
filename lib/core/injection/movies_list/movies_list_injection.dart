@@ -5,7 +5,6 @@ import 'package:imdumb/features/movies_list/data/datasource/network/movies_list_
 import 'package:imdumb/features/movies_list/data/repository/movies_list_repository_impl.dart';
 import 'package:imdumb/features/movies_list/domain/repository/movies_list_repository.dart';
 import 'package:imdumb/features/movies_list/domain/use_cases/fetch_movies_list_usecase.dart';
-import 'package:imdumb/main.dart';
 
 class MoviesListInjection {
   final GetIt _getIt;
@@ -15,14 +14,23 @@ class MoviesListInjection {
   }
 
   void _init() {
-    _getIt.registerLazySingleton<MoviesListDatasource>(
-      () => MoviesListDatasourceNtwImpl(services: getIt<ApiServices>()),
-    );
-    _getIt.registerLazySingleton<MoviesListRepository>(
-      () => MoviesListRepositoryImpl(datasource: getIt<MoviesListDatasource>()),
-    );
-    _getIt.registerLazySingleton<FetchMoviesListUsecase>(
-      () => FetchMoviesListUsecase(repository: getIt<MoviesListRepository>()),
-    );
+    if (!_getIt.isRegistered<MoviesListDatasource>()) {
+      _getIt.registerLazySingleton<MoviesListDatasource>(
+        () => MoviesListDatasourceNtwImpl(services: _getIt<ApiServices>()),
+      );
+    }
+    if (!_getIt.isRegistered<MoviesListRepository>()) {
+      _getIt.registerLazySingleton<MoviesListRepository>(
+        () => MoviesListRepositoryImpl(
+          datasource: _getIt<MoviesListDatasource>(),
+        ),
+      );
+    }
+    if (!_getIt.isRegistered<FetchMoviesListUsecase>()) {
+      _getIt.registerLazySingleton<FetchMoviesListUsecase>(
+        () =>
+            FetchMoviesListUsecase(repository: _getIt<MoviesListRepository>()),
+      );
+    }
   }
 }

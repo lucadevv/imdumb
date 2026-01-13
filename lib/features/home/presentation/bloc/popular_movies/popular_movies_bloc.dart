@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:imdumb/core/bloc/base_bloc_mixin.dart';
 import 'package:imdumb/core/utils/constans/app_language.dart';
-import 'package:imdumb/core/utils/exeptions/app_exceptions.dart';
 import 'package:imdumb/features/home/domain/entities/popular_movie_entity.dart';
 import 'package:imdumb/features/home/domain/use_cases/fetch_all_popular_movie_usecase.dart';
 
@@ -17,8 +16,8 @@ class PopularMoviesBloc extends Bloc<PopularMoviesEvent, PopularMoviesState>
 
   PopularMoviesBloc({
     required FetchAllPopularMovieUsecase fetchAllPopularMovieUsecase,
-  })  : _fetchAllPopularMovieUsecase = fetchAllPopularMovieUsecase,
-        super(PopularMoviesState.initial()) {
+  }) : _fetchAllPopularMovieUsecase = fetchAllPopularMovieUsecase,
+       super(PopularMoviesState.initial()) {
     on<FetchPopularMoviesEvent>(_fetchPopularMoviesEvent);
   }
 

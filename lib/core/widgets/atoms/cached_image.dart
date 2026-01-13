@@ -26,33 +26,49 @@ class CachedImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget content;
+    
     if (imageUrl == null || imageUrl!.isEmpty) {
-      return _buildErrorWidget(context);
+      content = errorWidget ?? _buildErrorWidget(context);
+    } else {
+      content = CachedNetworkImage(
+        imageUrl: imageUrl!,
+        fit: fit,
+        width: width,
+        height: height,
+        placeholder: (context, url) =>
+            placeholder ?? _buildPlaceholder(context),
+        errorWidget: (context, url, error) =>
+            errorWidget ?? _buildErrorWidget(context),
+      );
     }
 
-    return CachedNetworkImage(
-      imageUrl: imageUrl!,
-      fit: fit,
-      width: width,
-      height: height,
-      placeholder: (context, url) =>
-          placeholder ?? _buildPlaceholder(context),
-      errorWidget: (context, url, error) =>
-          errorWidget ?? _buildErrorWidget(context),
-    );
+    if (width != null || height != null) {
+      return SizedBox(
+        width: width,
+        height: height,
+        child: content,
+      );
+    }
+
+    return content;
   }
 
   Widget _buildPlaceholder(BuildContext context) {
-    return Container(
-      color: context.appColor.surfaceContainer,
-      child: const Center(child: CircularProgressIndicator()),
+    return SizedBox.expand(
+      child: Container(
+        color: context.appColor.surfaceContainer,
+        child: const Center(child: CircularProgressIndicator()),
+      ),
     );
   }
 
   Widget _buildErrorWidget(BuildContext context) {
-    return Container(
-      color: context.appColor.surfaceContainer,
-      child: const Icon(Icons.movie, size: 48),
+    return SizedBox.expand(
+      child: Container(
+        color: context.appColor.surfaceContainer,
+        child: const Icon(Icons.movie, size: 48),
+      ),
     );
   }
 }

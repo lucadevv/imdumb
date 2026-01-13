@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:imdumb/core/bloc/base_bloc_mixin.dart';
 import 'package:imdumb/core/utils/constans/app_language.dart';
-import 'package:imdumb/core/utils/exeptions/app_exceptions.dart';
 import 'package:imdumb/features/home/domain/entities/popular_movie_entity.dart';
 import 'package:imdumb/features/movies_list/domain/entities/movie_list_type.dart';
 import 'package:imdumb/features/movies_list/domain/use_cases/fetch_movies_list_usecase.dart';
@@ -22,8 +21,8 @@ class MoviesListBloc extends Bloc<MoviesListEvent, MoviesListState>
     required FetchMoviesListUsecase fetchMoviesListUsecase,
     required this.type,
     this.genreId,
-  })  : _fetchMoviesListUsecase = fetchMoviesListUsecase,
-        super(MoviesListState.initial()) {
+  }) : _fetchMoviesListUsecase = fetchMoviesListUsecase,
+       super(MoviesListState.initial()) {
     on<FetchMoviesListEvent>(_fetchMoviesListEvent);
   }
 
@@ -36,12 +35,14 @@ class MoviesListBloc extends Bloc<MoviesListEvent, MoviesListState>
     }
 
     if (!event.isLoadMore) {
-      emit(state.copyWith(
-        status: MoviesListStatus.loading,
-        movies: [],
-        page: 1,
-        hasMore: true,
-      ));
+      emit(
+        state.copyWith(
+          status: MoviesListStatus.loading,
+          movies: [],
+          page: 1,
+          hasMore: true,
+        ),
+      );
     } else {
       emit(state.copyWith(status: MoviesListStatus.loading));
     }
@@ -64,8 +65,9 @@ class MoviesListBloc extends Bloc<MoviesListEvent, MoviesListState>
         );
       },
       (movies) async {
-        final updatedList =
-            event.isLoadMore ? [...state.movies, ...movies] : movies;
+        final updatedList = event.isLoadMore
+            ? [...state.movies, ...movies]
+            : movies;
 
         final hasMore = movies.isNotEmpty && movies.length >= 20;
 

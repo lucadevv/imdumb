@@ -23,17 +23,22 @@ class EmptyImagesAppBar extends StatelessWidget {
           CachedNetworkImage(
             imageUrl: imageUrl,
             fit: BoxFit.cover,
-            placeholder: (context, url) =>
-                Container(color: context.appColor.surfaceContainer),
-            errorWidget: (context, url, error) => Container(
-              color: context.appColor.surfaceContainer,
-              child: const Icon(Icons.movie, size: 64),
+            placeholder: (context, url) => SizedBox.expand(
+              child: Container(color: context.appColor.surfaceContainer),
+            ),
+            errorWidget: (context, url, error) => SizedBox.expand(
+              child: Container(
+                color: context.appColor.surfaceContainer,
+                child: const Icon(Icons.movie, size: 64),
+              ),
             ),
           )
         else
-          Container(
-            color: context.appColor.surfaceContainer,
-            child: const Icon(Icons.movie, size: 64),
+          SizedBox.expand(
+            child: Container(
+              color: context.appColor.surfaceContainer,
+              child: const Icon(Icons.movie, size: 64),
+            ),
           ),
         Container(
           decoration: BoxDecoration(

@@ -1,10 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:imdumb/core/constants/app_keys.dart';
 import 'package:imdumb/core/utils/extension/context_extension.dart';
 import 'package:imdumb/core/utils/extension/sizedbox_extension.dart';
 import 'package:imdumb/core/widgets/molecules/empty_state.dart';
 import 'package:imdumb/core/widgets/molecules/error_state.dart';
+import 'package:imdumb/core/widgets/molecules/shimmer_movie_detail.dart';
 import 'package:imdumb/features/movie_detail/domain/use_cases/fetch_movie_credits_usecase.dart';
 import 'package:imdumb/features/movie_detail/domain/use_cases/fetch_movie_detail_usecase.dart';
 import 'package:imdumb/features/movie_detail/domain/use_cases/fetch_movie_images_usecase.dart';
@@ -15,6 +17,7 @@ import 'package:imdumb/features/movie_detail/presentation/widgets/empty_images_a
 import 'package:imdumb/features/movie_detail/presentation/widgets/movie_detail_background_image.dart';
 import 'package:imdumb/features/movie_detail/presentation/widgets/movie_info_section.dart';
 import 'package:imdumb/features/movie_detail/presentation/widgets/recommendation_modal.dart';
+import 'package:imdumb/core/services/firebase/analytics_service.dart';
 import 'package:imdumb/main.dart';
 
 @RoutePage()
@@ -44,9 +47,28 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
   final TextEditingController _commentController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    _trackScreenView();
+  }
+
+  @override
   void dispose() {
     _commentController.dispose();
     super.dispose();
+  }
+
+  Future<void> _trackScreenView() async {
+    try {
+      final analyticsService = getIt<AnalyticsService>();
+      await analyticsService.logScreenView(
+        'movie_detail_screen',
+        parameters: {'movie_id': widget.movieId},
+      );
+    } catch (e) {
+      // Silenciar errores de analytics para no afectar la experiencia del usuario
+      debugPrint('Error al registrar analytics: $e');
+    }
   }
 
   void _showRecommendationModal() {
@@ -62,12 +84,36 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
       builder: (context) => RecommendationModal(
         movieDetail: movieDetail,
         commentController: _commentController,
-        onConfirm: () {
-          Navigator.of(context).pop();
-          ScaffoldMessenger.of(context).showSnackBar(
+        onConfirm: () async {
+          // Guardar referencias antes del await para evitar usar context después de async gap
+          if (!mounted) return;
+          final navigator = Navigator.of(context);
+          final scaffoldMessenger = ScaffoldMessenger.of(context);
+          final primaryColor = context.appColor.primary;
+          
+          // SOLID: Dependency Inversion Principle (DIP)
+          // El screen depende de la abstracción AnalyticsService, no de la implementación concreta.
+          try {
+            final analyticsService = getIt<AnalyticsService>();
+            await analyticsService.logEvent(
+              'recommendation_sent',
+              parameters: {
+                'movie_id': movieDetail.id,
+                'movie_title': movieDetail.title,
+                'has_comment': _commentController.text.isNotEmpty ? 'true' : 'false',
+              },
+            );
+          } catch (e) {
+            // Silenciar errores de analytics para no afectar la experiencia del usuario
+            debugPrint('Error al registrar analytics: $e');
+          }
+
+          if (!mounted) return;
+          navigator.pop();
+          scaffoldMessenger.showSnackBar(
             SnackBar(
               content: const Text('¡Recomendación enviada con éxito!'),
-              backgroundColor: context.appColor.primary,
+              backgroundColor: primaryColor,
               behavior: SnackBarBehavior.floating,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -86,7 +132,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
       body: BlocBuilder<MovieDetailBloc, MovieDetailState>(
         builder: (context, state) {
           if (state.status == MovieDetailStatus.loading) {
-            return const Center(child: CircularProgressIndicator());
+            return const ShimmerMovieDetail();
           }
 
           if (state.status == MovieDetailStatus.failure) {
@@ -108,56 +154,67 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
           return Stack(
             children: [
               MovieDetailBackgroundImage(movieDetail: movieDetail),
-              CustomScrollView(
-                slivers: [
-                  SliverAppBar(
-                    title: Text(
-                      movieDetail.title,
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                    leading: IconButton(
-                      icon: const Icon(
-                        Icons.arrow_back_ios,
-                        color: Colors.white,
+              RefreshIndicator(
+                onRefresh: () async {
+                  context.read<MovieDetailBloc>().add(
+                    const FetchMovieDetailEvent(),
+                  );
+                  // Esperar un poco para que el refresh se complete
+                  await Future.delayed(const Duration(milliseconds: 500));
+                },
+                child: CustomScrollView(
+                  key: AppKeys.movieDetailScrollView,
+                  slivers: [
+                    SliverAppBar(
+                      title: Text(
+                        movieDetail.title,
+                        style: const TextStyle(color: Colors.white),
                       ),
-                      onPressed: () {
-                        context.router.pop();
-                      },
+                      leading: IconButton(
+                        key: AppKeys.movieDetailBackButton,
+                        icon: const Icon(
+                          Icons.arrow_back_ios,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          context.router.pop();
+                        },
+                      ),
+                      floating: true,
+                      pinned: true,
+                      expandedHeight: context.screenHeight * 0.4,
+                      backgroundColor: Colors.transparent,
+                      elevation: 0,
+                      flexibleSpace: state.images.isNotEmpty
+                          ? FlexibleSpaceBar(
+                              background: ImagesCarouselAppBar(
+                                images: state.images,
+                              ),
+                            )
+                          : FlexibleSpaceBar(
+                              background: EmptyImagesAppBar(
+                                movieDetail: movieDetail,
+                              ),
+                            ),
                     ),
-                    floating: true,
-                    pinned: true,
-                    expandedHeight: context.screenHeight * 0.4,
-                    backgroundColor: Colors.transparent,
-                    elevation: 0,
-                    flexibleSpace: state.images.isNotEmpty
-                        ? FlexibleSpaceBar(
-                            background: ImagesCarouselAppBar(
-                              images: state.images,
-                            ),
-                          )
-                        : FlexibleSpaceBar(
-                            background: EmptyImagesAppBar(
-                              movieDetail: movieDetail,
-                            ),
-                          ),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.all(16.0),
-                    sliver: SliverToBoxAdapter(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          MovieInfoSection(movieDetail: movieDetail),
-                          CastSection(casts: state.casts),
-                          80.spaceh,
-                        ],
+                    SliverPadding(
+                      padding: const EdgeInsets.all(16.0),
+                      sliver: SliverToBoxAdapter(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            MovieInfoSection(movieDetail: movieDetail),
+                            CastSection(casts: state.casts),
+                            80.spaceh,
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               Positioned(
-                bottom: 16,
+                bottom: kBottomNavigationBarHeight - 16,
                 left: 0,
                 right: 0,
                 child: Container(
@@ -166,6 +223,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                   child: SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
+                      key: AppKeys.movieDetailRecommendButton,
                       onPressed: _showRecommendationModal,
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),

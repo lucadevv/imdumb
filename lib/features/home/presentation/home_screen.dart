@@ -13,6 +13,7 @@ import 'package:imdumb/features/home/presentation/bloc/genres/genres_bloc.dart';
 import 'package:imdumb/features/home/presentation/bloc/genre_movies/genre_movies_bloc.dart';
 import 'package:imdumb/features/home/presentation/bloc/orchestrator/home_orchestrator_bloc.dart';
 
+import 'package:imdumb/core/constants/app_keys.dart';
 import 'package:imdumb/main.dart';
 import 'package:imdumb/features/home/presentation/widgets/home_app_bar.dart';
 import 'package:imdumb/features/home/presentation/widgets/popular_movies_section.dart';
@@ -21,6 +22,7 @@ import 'package:imdumb/features/home/presentation/widgets/top_rated_movies_secti
 import 'package:imdumb/features/home/presentation/widgets/genre_movies_section.dart';
 import 'package:imdumb/features/home/presentation/widgets/background_image_widget.dart';
 import 'package:imdumb/features/home/presentation/widgets/genres_drawer.dart';
+import 'package:imdumb/core/services/firebase/analytics_service.dart';
 
 @RoutePage()
 class HomeScreen extends StatefulWidget implements AutoRouteWrapper {
@@ -85,6 +87,25 @@ class _HomeScreenState extends State<HomeScreen> {
   int _currentCarouselIndex = 0;
 
   @override
+  void initState() {
+    super.initState();
+    // SOLID: Dependency Inversion Principle (DIP)
+    // El screen depende de la abstracción AnalyticsService, no de la implementación concreta.
+    // Esto permite cambiar la implementación sin afectar este código.
+    _trackScreenView();
+  }
+
+  Future<void> _trackScreenView() async {
+    try {
+      final analyticsService = getIt<AnalyticsService>();
+      await analyticsService.logScreenView('home_screen');
+    } catch (e) {
+      // Silenciar errores de analytics para no afectar la experiencia del usuario
+      debugPrint('Error al registrar analytics: $e');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: const GenresDrawer(),
@@ -93,26 +114,38 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             BlocBuilder<PopularMoviesBloc, PopularMoviesState>(
               builder: (context, state) {
+                // Sincronizar el índice con la lista de películas populares
+                final validIndex = state.movies.isNotEmpty
+                    ? _currentCarouselIndex.clamp(0, state.movies.length - 1)
+                    : 0;
                 return BackgroundImageWidget(
-                  currentIndex: _currentCarouselIndex,
+                  currentIndex: validIndex,
                   movies: state.movies,
                 );
               },
             ),
-            CustomScrollView(
-        slivers: [
-                HomeAppBar(),
-                PopularMoviesSection(
-                  onPageChanged: (index) {
-                    setState(() {
-                      _currentCarouselIndex = index;
-                    });
-                  },
-                ),
-                NowPlayingMoviesSection(),
-                TopRatedMoviesSection(),
-                GenreMoviesSections(),
-        ],
+            RefreshIndicator(
+              onRefresh: () async {
+                context.read<HomeOrchestratorBloc>().loadAllData();
+                // Esperar un poco para que el refresh se complete
+                await Future.delayed(const Duration(milliseconds: 500));
+              },
+              child: CustomScrollView(
+                key: AppKeys.homeScrollView,
+                slivers: [
+                  HomeAppBar(),
+                  PopularMoviesSection(
+                    onPageChanged: (index) {
+                      setState(() {
+                        _currentCarouselIndex = index;
+                      });
+                    },
+                  ),
+                  NowPlayingMoviesSection(),
+                  TopRatedMoviesSection(),
+                  GenreMoviesSections(),
+                ],
+              ),
             ),
           ],
         ),

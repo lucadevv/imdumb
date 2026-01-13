@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyA1fwkkRVi54s5XerQnTxYRdEf11Wsux6k',
-    appId: '1:299969973670:android:f086d65e194627b57f9367',
+    appId: '1:299969973670:android:b027ae605bfee4227f9367',
     messagingSenderId: '299969973670',
     projectId: 'imdumb-a32c0',
     storageBucket: 'imdumb-a32c0.firebasestorage.app',
@@ -59,10 +59,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyC9Z08Qa7sFDLzpqceZP_nIX766VEP2p6w',
-    appId: '1:299969973670:ios:e016788e1b52578e7f9367',
+    appId: '1:299969973670:ios:a4f4ee91aed8b9dd7f9367',
     messagingSenderId: '299969973670',
     projectId: 'imdumb-a32c0',
     storageBucket: 'imdumb-a32c0.firebasestorage.app',
-    iosBundleId: 'com.example.imdumb',
+    iosBundleId: 'com.lucadev.imdumb',
   );
+
 }

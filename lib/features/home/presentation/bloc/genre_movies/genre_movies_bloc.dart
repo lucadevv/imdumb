@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:imdumb/core/bloc/base_bloc_mixin.dart';
 import 'package:imdumb/core/utils/constans/app_language.dart';
-import 'package:imdumb/core/utils/exeptions/app_exceptions.dart';
 import 'package:imdumb/features/home/domain/entities/popular_movie_entity.dart';
 import 'package:imdumb/features/home/domain/use_cases/fetch_movies_by_genre_usecase.dart';
 
@@ -17,8 +16,8 @@ class GenreMoviesBloc extends Bloc<GenreMoviesEvent, GenreMoviesState>
 
   GenreMoviesBloc({
     required FetchMoviesByGenreUsecase fetchMoviesByGenreUsecase,
-  })  : _fetchMoviesByGenreUsecase = fetchMoviesByGenreUsecase,
-        super(GenreMoviesState.initial()) {
+  }) : _fetchMoviesByGenreUsecase = fetchMoviesByGenreUsecase,
+       super(GenreMoviesState.initial()) {
     on<FetchMoviesByGenreEvent>(_fetchMoviesByGenreEvent);
   }
 
@@ -33,8 +32,9 @@ class GenreMoviesBloc extends Bloc<GenreMoviesEvent, GenreMoviesState>
     }
 
     if (!event.isLoadMore) {
-      final updatedMovieStates =
-          Map<int, GenreMovieStatus>.from(state.movieStates);
+      final updatedMovieStates = Map<int, GenreMovieStatus>.from(
+        state.movieStates,
+      );
       updatedMovieStates[event.genreId] = GenreMovieStatus.loading;
       final updatedMovies = Map<int, List<PopularMovieEntity>>.from(
         state.moviesByGenre,
@@ -45,15 +45,18 @@ class GenreMoviesBloc extends Bloc<GenreMoviesEvent, GenreMoviesState>
       final updatedHasMore = Map<int, bool>.from(state.hasMore);
       updatedHasMore[event.genreId] = true;
 
-      emit(state.copyWith(
-        movieStates: updatedMovieStates,
-        moviesByGenre: updatedMovies,
-        pages: updatedPages,
-        hasMore: updatedHasMore,
-      ));
+      emit(
+        state.copyWith(
+          movieStates: updatedMovieStates,
+          moviesByGenre: updatedMovies,
+          pages: updatedPages,
+          hasMore: updatedHasMore,
+        ),
+      );
     } else {
-      final updatedMovieStates =
-          Map<int, GenreMovieStatus>.from(state.movieStates);
+      final updatedMovieStates = Map<int, GenreMovieStatus>.from(
+        state.movieStates,
+      );
       updatedMovieStates[event.genreId] = GenreMovieStatus.loading;
       emit(state.copyWith(movieStates: updatedMovieStates));
     }
@@ -67,8 +70,9 @@ class GenreMoviesBloc extends Bloc<GenreMoviesEvent, GenreMoviesState>
     await response.fold(
       (failure) async {
         String errorMessage = getErrorMessage(failure);
-        final updatedMovieStates =
-            Map<int, GenreMovieStatus>.from(state.movieStates);
+        final updatedMovieStates = Map<int, GenreMovieStatus>.from(
+          state.movieStates,
+        );
         updatedMovieStates[event.genreId] = GenreMovieStatus.failure;
         final updatedErrors = Map<int, String?>.from(state.errors);
         updatedErrors[event.genreId] = errorMessage;
@@ -82,8 +86,9 @@ class GenreMoviesBloc extends Bloc<GenreMoviesEvent, GenreMoviesState>
       },
       (movies) async {
         final currentMovies = state.moviesByGenre[event.genreId] ?? [];
-        final updatedList =
-            event.isLoadMore ? [...currentMovies, ...movies] : movies;
+        final updatedList = event.isLoadMore
+            ? [...currentMovies, ...movies]
+            : movies;
 
         final hasMore = movies.isNotEmpty && movies.length >= 20;
 
@@ -91,8 +96,9 @@ class GenreMoviesBloc extends Bloc<GenreMoviesEvent, GenreMoviesState>
           state.moviesByGenre,
         );
         updatedMovies[event.genreId] = updatedList;
-        final updatedMovieStates =
-            Map<int, GenreMovieStatus>.from(state.movieStates);
+        final updatedMovieStates = Map<int, GenreMovieStatus>.from(
+          state.movieStates,
+        );
         updatedMovieStates[event.genreId] = GenreMovieStatus.success;
         final updatedPages = Map<int, int>.from(state.pages);
         updatedPages[event.genreId] = event.page;

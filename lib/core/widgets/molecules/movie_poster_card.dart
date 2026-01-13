@@ -5,16 +5,18 @@ import 'package:imdumb/core/utils/extension/sizedbox_extension.dart';
 import 'package:imdumb/core/routes/app_router.gr.dart';
 import 'package:imdumb/core/widgets/atoms/cached_image.dart';
 import 'package:imdumb/core/widgets/molecules/rating_row.dart';
+import 'package:imdumb/core/services/firebase/analytics_service.dart';
 import 'package:imdumb/features/home/domain/entities/popular_movie_entity.dart';
+import 'package:imdumb/main.dart';
 
 /// Molecule: Card reutilizable para mostrar películas en listas horizontales
-/// 
+///
 /// Widget que muestra:
 /// - Imagen del poster (con cache y placeholder/error)
 /// - Título de la película
 /// - Rating con estrella y año (opcional)
 /// - Navegación al detalle al hacer tap
-/// 
+///
 /// Este widget reemplaza las múltiples variantes:
 /// - _NowPlayingMovieCard
 /// - _TopRatedMovieCard
@@ -41,8 +43,25 @@ class MoviePosterCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        context.router.push(MovieDetailRoute(movieId: movie.id));
+      key: Key('movie_poster_card_${movie.id}'),
+      onTap: () async {
+        // Guardar el router antes del await para evitar usar context después de async gap
+        final router = context.router;
+        
+        // SOLID: Dependency Inversion Principle (DIP)
+        // El widget depende de la abstracción AnalyticsService, no de la implementación concreta.
+        try {
+          final analyticsService = getIt<AnalyticsService>();
+          await analyticsService.logEvent(
+            'movie_selected',
+            parameters: {'movie_id': movie.id, 'movie_title': movie.title},
+          );
+        } catch (e) {
+          // Silenciar errores de analytics para no afectar la experiencia del usuario
+          debugPrint('Error al registrar analytics: $e');
+        }
+
+        router.push(MovieDetailRoute(movieId: movie.id));
       },
       borderRadius: BorderRadius.circular(borderRadius),
       child: Container(
@@ -62,7 +81,7 @@ class MoviePosterCard extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(borderRadius),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(
                 child: CachedImage(

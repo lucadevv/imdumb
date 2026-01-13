@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:imdumb/core/utils/extension/context_extension.dart';
 import 'package:imdumb/core/utils/extension/sizedbox_extension.dart';
 import 'package:imdumb/core/widgets/atoms/cached_image.dart';
@@ -7,57 +8,73 @@ import 'package:imdumb/features/movie_detail/domain/entities/cast_entity.dart';
 class CastCard extends StatelessWidget {
   final CastEntity cast;
 
-  const CastCard({
-    super.key,
-    required this.cast,
-  });
+  const CastCard({super.key, required this.cast});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 100,
-      height: 150,
+      width: 120,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(12),
             child: Container(
-              width: 100,
-              height: 100,
+              width: 120,
+              height: 120,
               color: context.appColor.surfaceContainer,
               child: cast.profileUrlW185 != null
                   ? CachedImage(
                       imageUrl: cast.profileUrlW185,
                       fit: BoxFit.cover,
-                      placeholder: const Center(
-                        child: CircularProgressIndicator(),
+                      width: 120,
+                      height: 120,
+                      placeholder: Shimmer.fromColors(
+                        baseColor: context.appColor.surfaceContainer,
+                        highlightColor: context.appColor.surfaceContainerHigh,
+                        child: Container(
+                          width: 120,
+                          height: 120,
+                          decoration: BoxDecoration(
+                            color: context.appColor.surfaceContainer,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
                       ),
-                      errorWidget: const Icon(Icons.person),
+                      errorWidget: Container(
+                        width: 120,
+                        height: 120,
+                        color: context.appColor.surfaceContainer,
+                        child: const Icon(Icons.person, size: 56),
+                      ),
                     )
-                  : const Icon(Icons.person, size: 48),
+                  : const Center(child: Icon(Icons.person, size: 56)),
             ),
           ),
-          6.spaceh,
+          8.spaceh,
           Flexible(
             child: Text(
               cast.name,
-              style: context.appTextTheme.bodySmall,
+              style: context.appTextTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.left,
             ),
           ),
           if (cast.character != null) ...[
-            2.spaceh,
+            4.spaceh,
             Flexible(
               child: Text(
                 cast.character!,
                 style: context.appTextTheme.bodySmall?.copyWith(
                   color: context.appColor.onSurfaceVariant,
                 ),
-                maxLines: 1,
+                maxLines: 2,
                 overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.left,
               ),
             ),
           ],

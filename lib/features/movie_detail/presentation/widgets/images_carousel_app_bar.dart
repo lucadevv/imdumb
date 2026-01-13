@@ -3,14 +3,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:imdumb/core/utils/extension/context_extension.dart';
 import 'package:imdumb/features/movie_detail/domain/entities/movie_image_entity.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ImagesCarouselAppBar extends StatelessWidget {
   final List<MovieImageEntity> images;
 
-  const ImagesCarouselAppBar({
-    super.key,
-    required this.images,
-  });
+  const ImagesCarouselAppBar({super.key, required this.images});
 
   @override
   Widget build(BuildContext context) {
@@ -42,18 +40,27 @@ class ImagesCarouselAppBar extends StatelessWidget {
                   ? CachedNetworkImage(
                       imageUrl: imageUrl,
                       fit: BoxFit.cover,
-                      placeholder: (context, url) => Container(
-                        color: context.appColor.surfaceContainer,
-                        child: const Center(child: CircularProgressIndicator()),
+                      placeholder: (context, url) => SizedBox.expand(
+                        child: Shimmer.fromColors(
+                          baseColor: context.appColor.surfaceContainer,
+                          highlightColor: context.appColor.surfaceContainerHigh,
+                          child: Container(
+                            color: context.appColor.surfaceContainer,
+                          ),
+                        ),
                       ),
-                      errorWidget: (context, url, error) => Container(
+                      errorWidget: (context, url, error) => SizedBox.expand(
+                        child: Container(
+                          color: context.appColor.surfaceContainer,
+                          child: const Icon(Icons.image, size: 64),
+                        ),
+                      ),
+                    )
+                  : SizedBox.expand(
+                      child: Container(
                         color: context.appColor.surfaceContainer,
                         child: const Icon(Icons.image, size: 64),
                       ),
-                    )
-                  : Container(
-                      color: context.appColor.surfaceContainer,
-                      child: const Icon(Icons.image, size: 64),
                     ),
             );
           },

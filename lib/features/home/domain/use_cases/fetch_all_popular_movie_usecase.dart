@@ -19,6 +19,9 @@ class FetchAllPopularMovieUsecase {
     String page = "1",
     String? language = AppLanguage.spanish,
   }) async {
-    return await _repository.fetchAllPopularMovies();
+    return await _repository.fetchAllPopularMovies(
+      page: page,
+      language: language,
+    );
   }
 }

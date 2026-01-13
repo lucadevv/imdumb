@@ -1,13 +1,15 @@
-import 'dart:ui';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:imdumb/core/utils/extension/context_extension.dart';
-import 'package:imdumb/core/widgets/molecules/movie_poster_card.dart';
+import 'package:imdumb/core/constants/app_keys.dart';
 import 'package:imdumb/features/movies_list/domain/entities/movie_list_type.dart';
 import 'package:imdumb/features/movies_list/domain/use_cases/fetch_movies_list_usecase.dart';
 import 'package:imdumb/features/movies_list/presentation/bloc/movies_list_bloc.dart';
+import 'package:imdumb/features/movies_list/presentation/widgets/movies_list_app_bar.dart';
+import 'package:imdumb/features/movies_list/presentation/widgets/movies_list_empty_state.dart';
+import 'package:imdumb/features/movies_list/presentation/widgets/movies_list_error_state.dart';
+import 'package:imdumb/features/movies_list/presentation/widgets/movies_list_grid.dart';
+import 'package:imdumb/core/services/firebase/analytics_service.dart';
 import 'package:imdumb/main.dart';
 
 @RoutePage()
@@ -46,6 +48,24 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+    _trackScreenView();
+  }
+
+  Future<void> _trackScreenView() async {
+    try {
+      final analyticsService = getIt<AnalyticsService>();
+      await analyticsService.logScreenView(
+        'movies_list_screen',
+        parameters: {
+          'type': widget.type.toString(),
+          if (widget.genreId != null) 'genre_id': widget.genreId,
+          if (widget.genreName != null) 'genre_name': widget.genreName,
+        },
+      );
+    } catch (e) {
+      // Silenciar errores de analytics para no afectar la experiencia del usuario
+      debugPrint('Error al registrar analytics: $e');
+    }
   }
 
   @override
@@ -85,102 +105,55 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
 
           if (state.status == MoviesListStatus.failure &&
               state.movies.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    state.errorMessage ?? 'Error al cargar las películas',
-                    style: TextStyle(color: context.appColor.error),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.read<MoviesListBloc>().add(
-                        const FetchMoviesListEvent(),
-                      );
-                    },
-                    child: const Text('Reintentar'),
-                  ),
-                ],
-              ),
+            return MoviesListErrorState(
+              errorMessage: state.errorMessage,
+              onRetry: () {
+                context.read<MoviesListBloc>().add(
+                      const FetchMoviesListEvent(),
+                    );
+              },
             );
           }
 
           if (state.movies.isEmpty) {
-            return Center(
-              child: Text(
-                'No hay películas disponibles',
-                style: TextStyle(color: context.appColor.onSurface),
-              ),
-            );
+            return const MoviesListEmptyState();
           }
 
-          return CustomScrollView(
-            controller: _scrollController,
-            slivers: [
-              SliverAppBar(
-                title: Text(widget.genreName ?? widget.type.title),
-                leading: IconButton(
-                  icon: const Icon(Icons.arrow_back_ios),
-                  onPressed: () {
+          return RefreshIndicator(
+            key: AppKeys.moviesListRefreshIndicator,
+            onRefresh: () async {
+              context.read<MoviesListBloc>().add(
+                const FetchMoviesListEvent(page: 1, isLoadMore: false),
+              );
+              // Esperar un poco para que el refresh se complete
+              await Future.delayed(const Duration(milliseconds: 500));
+            },
+            child: CustomScrollView(
+              key: AppKeys.moviesListScrollView,
+              controller: _scrollController,
+              slivers: [
+                MoviesListAppBar(
+                  title: widget.genreName ?? widget.type.title,
+                  onBackPressed: () {
                     context.router.pop();
                   },
                 ),
-                floating: true,
-                pinned: true,
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                flexibleSpace: ClipRRect(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: context.appColor.surfaceContainer.withValues(
-                          alpha: 0.9,
-                        ),
-                      ),
-                    ),
-                  ),
+                MoviesListGrid(
+                  movies: state.movies,
+                  hasMore: state.hasMore,
+                  status: state.status,
+                  currentPage: state.page,
+                  onLoadMore: () {
+                    context.read<MoviesListBloc>().add(
+                          FetchMoviesListEvent(
+                            page: state.page + 1,
+                            isLoadMore: true,
+                          ),
+                        );
+                  },
                 ),
-              ),
-              SliverPadding(
-                padding: const EdgeInsets.all(16.0),
-                sliver: SliverGrid(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 0.6,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                  ),
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      if (index >= state.movies.length) {
-                        if (state.hasMore) {
-                          context.read<MoviesListBloc>().add(
-                            FetchMoviesListEvent(
-                              page: state.page + 1,
-                              isLoadMore: true,
-                            ),
-                          );
-                        }
-                        return const Center(child: CircularProgressIndicator());
-                      }
-
-                      final movie = state.movies[index];
-                      return MoviePosterCard(movie: movie, titleMaxLines: 2);
-                    },
-                    childCount:
-                        state.movies.length +
-                        (state.status == MoviesListStatus.loading &&
-                                state.hasMore
-                            ? 1
-                            : 0),
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           );
         },
       ),

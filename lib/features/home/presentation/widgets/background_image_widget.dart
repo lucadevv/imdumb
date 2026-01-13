@@ -1,8 +1,7 @@
-import 'dart:ui';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:imdumb/core/utils/extension/context_extension.dart';
+import 'package:imdumb/core/widgets/atoms/opacity_overlay.dart';
 import 'package:imdumb/features/home/domain/entities/popular_movie_entity.dart';
 
 class BackgroundImageWidget extends StatelessWidget {
@@ -17,11 +16,14 @@ class BackgroundImageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (movies.isEmpty || currentIndex >= movies.length) {
+    // Validar que tenemos películas y el índice es válido
+    if (movies.isEmpty) {
       return const SizedBox.shrink();
     }
 
-    final movie = movies[currentIndex];
+    // Asegurar que el índice esté dentro del rango válido
+    final validIndex = currentIndex.clamp(0, movies.length - 1);
+    final movie = movies[validIndex];
     final imageUrl = movie.backdropUrlW1280 ?? movie.backdropUrlW780;
 
     final screenWidth = context.screenWidth;
@@ -47,25 +49,24 @@ class BackgroundImageWidget extends StatelessWidget {
                   fit: BoxFit.cover,
                   width: screenWidth,
                   height: backgroundHeight,
-                  placeholder: (context, url) =>
-                      Container(color: context.appColor.surfaceContainer),
-                  errorWidget: (context, url, error) =>
-                      Container(color: context.appColor.surfaceContainer),
+                  placeholder: (context, url) => SizedBox(
+                    width: screenWidth,
+                    height: backgroundHeight,
+                    child: Container(color: context.appColor.surfaceContainer),
+                  ),
+                  errorWidget: (context, url, error) => SizedBox(
+                    width: screenWidth,
+                    height: backgroundHeight,
+                    child: Container(color: context.appColor.surfaceContainer),
+                  ),
                 ),
               )
             else
               Container(color: context.appColor.surfaceContainer),
             Positioned.fill(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                child: Container(
-                  color: const Color.fromARGB(
-                    255,
-                    55,
-                    36,
-                    36,
-                  ).withValues(alpha: 0.3),
-                ),
+              child: OpacityOverlay(
+                opacity: 0.01,
+                color: Colors.black.withValues(alpha: 0.85),
               ),
             ),
           ],

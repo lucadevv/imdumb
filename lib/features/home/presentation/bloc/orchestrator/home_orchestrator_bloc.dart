@@ -45,36 +45,76 @@ class HomeOrchestratorBloc
        super(HomeOrchestratorState.initial()) {
     _startListening();
     on<LoadAllHomeDataEvent>(_loadAllHomeDataEvent);
+    on<PopularMoviesStateChangedEvent>(_onPopularMoviesStateChanged);
+    on<NowPlayingMoviesStateChangedEvent>(_onNowPlayingMoviesStateChanged);
+    on<TopRatedMoviesStateChangedEvent>(_onTopRatedMoviesStateChanged);
+    on<GenresStateChangedEvent>(_onGenresStateChanged);
+    on<GenreMoviesStateChangedEvent>(_onGenreMoviesStateChanged);
   }
 
   void _startListening() {
     _popularMoviesSubscription = _popularMoviesBloc.stream.listen((
       popularMoviesState,
     ) {
-      emit(state.copyWith(popularMoviesState: popularMoviesState));
+      add(PopularMoviesStateChangedEvent(popularMoviesState));
     });
 
     _nowPlayingMoviesSubscription = _nowPlayingMoviesBloc.stream.listen((
       nowPlayingMoviesState,
     ) {
-      emit(state.copyWith(nowPlayingMoviesState: nowPlayingMoviesState));
+      add(NowPlayingMoviesStateChangedEvent(nowPlayingMoviesState));
     });
 
     _topRatedMoviesSubscription = _topRatedMoviesBloc.stream.listen((
       topRatedMoviesState,
     ) {
-      emit(state.copyWith(topRatedMoviesState: topRatedMoviesState));
+      add(TopRatedMoviesStateChangedEvent(topRatedMoviesState));
     });
 
     _genresSubscription = _genresBloc.stream.listen((genresState) {
-      emit(state.copyWith(genresState: genresState));
+      add(GenresStateChangedEvent(genresState));
     });
 
     _genreMoviesSubscription = _genreMoviesBloc.stream.listen((
       genreMoviesState,
     ) {
-      emit(state.copyWith(genreMoviesState: genreMoviesState));
+      add(GenreMoviesStateChangedEvent(genreMoviesState));
     });
+  }
+
+  void _onPopularMoviesStateChanged(
+    PopularMoviesStateChangedEvent event,
+    Emitter<HomeOrchestratorState> emit,
+  ) {
+    emit(state.copyWith(popularMoviesState: event.state));
+  }
+
+  void _onNowPlayingMoviesStateChanged(
+    NowPlayingMoviesStateChangedEvent event,
+    Emitter<HomeOrchestratorState> emit,
+  ) {
+    emit(state.copyWith(nowPlayingMoviesState: event.state));
+  }
+
+  void _onTopRatedMoviesStateChanged(
+    TopRatedMoviesStateChangedEvent event,
+    Emitter<HomeOrchestratorState> emit,
+  ) {
+    emit(state.copyWith(topRatedMoviesState: event.state));
+  }
+
+  void _onGenresStateChanged(
+    GenresStateChangedEvent event,
+    Emitter<HomeOrchestratorState> emit,
+  ) {
+    emit(state.copyWith(genresState: event.state));
+  }
+
+  void _onGenreMoviesStateChanged(
+    GenreMoviesStateChangedEvent event,
+    Emitter<HomeOrchestratorState> emit,
+  ) {
+    emit(state.copyWith(genreMoviesState: event.state));
   }
 
   Future<void> _loadAllHomeDataEvent(

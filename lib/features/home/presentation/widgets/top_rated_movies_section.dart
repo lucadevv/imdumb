@@ -1,12 +1,16 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:imdumb/core/constants/app_keys.dart';
+import 'package:imdumb/core/constants/app_strings.dart';
 import 'package:imdumb/core/widgets/molecules/movie_poster_card.dart';
 import 'package:imdumb/core/widgets/molecules/shimmer_list.dart';
 import 'package:imdumb/core/routes/app_router.gr.dart';
 import 'package:imdumb/core/utils/extension/context_extension.dart';
 import 'package:imdumb/features/home/presentation/bloc/top_rated_movies/top_rated_movies_bloc.dart';
 import 'package:imdumb/features/movies_list/domain/entities/movie_list_type.dart';
+import 'package:imdumb/core/services/firebase/analytics_service.dart';
+import 'package:imdumb/main.dart';
 
 class TopRatedMoviesSection extends StatefulWidget {
   const TopRatedMoviesSection({super.key});
@@ -65,20 +69,40 @@ class _TopRatedMoviesSectionState extends State<TopRatedMoviesSection> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      'Top Rated',
-                      style: TextStyle(
+                    Text(
+                      AppStrings.topRated,
+                      key: AppKeys.topRatedSectionTitle,
+                      style: const TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                     TextButton(
-                      onPressed: () {
-                        context.router.push(
+                      key: AppKeys.topRatedViewMoreButton,
+                      onPressed: () async {
+                        // Guardar el router antes del await para evitar usar context después de async gap
+                        if (!mounted) return;
+                        final router = context.router;
+
+                        // SOLID: Dependency Inversion Principle (DIP)
+                        // El widget depende de la abstracción AnalyticsService, no de la implementación concreta.
+                        try {
+                          final analyticsService = getIt<AnalyticsService>();
+                          await analyticsService.logEvent(
+                            'view_more_clicked',
+                            parameters: {'type': 'top_rated'},
+                          );
+                        } catch (e) {
+                          // Silenciar errores de analytics para no afectar la experiencia del usuario
+                          debugPrint('Error al registrar analytics: $e');
+                        }
+
+                        if (!mounted) return;
+                        router.push(
                           MoviesListRoute(type: MovieListType.topRated),
                         );
                       },
-                      child: const Text('Ver más'),
+                      child: const Text(AppStrings.viewMore),
                     ),
                   ],
                 ),
@@ -106,10 +130,12 @@ class _TopRatedMoviesSectionState extends State<TopRatedMoviesSection> {
                 SizedBox(
                   height: 280,
                   child: ListView.builder(
+                    key: AppKeys.topRatedMoviesList,
                     controller: _scrollController,
                     scrollDirection: Axis.horizontal,
                     physics: const BouncingScrollPhysics(),
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    cacheExtent: 500,
                     itemCount:
                         state.movies.length +
                         (state.status == TopRatedMoviesStatus.loading ? 1 : 0),
@@ -122,7 +148,9 @@ class _TopRatedMoviesSectionState extends State<TopRatedMoviesSection> {
                         );
                       }
                       final movie = state.movies[index];
-                      return MoviePosterCard(movie: movie);
+                      return RepaintBoundary(
+                        child: MoviePosterCard(movie: movie),
+                      );
                     },
                   ),
                 ),

@@ -3,6 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:imdumb/core/constants/app_keys.dart';
 import 'package:imdumb/core/widgets/molecules/shimmer_carousel.dart';
 import 'package:imdumb/core/routes/app_router.gr.dart';
 import 'package:imdumb/core/utils/extension/context_extension.dart';
@@ -61,6 +62,7 @@ class _PopularMoviesSectionState extends State<PopularMoviesSection> {
                 Column(
                   children: [
                     CarouselSlider.builder(
+                      key: AppKeys.popularMoviesList,
                       carouselController: _carouselController,
                       itemCount: state.movies.length,
                       options: CarouselOptions(
@@ -80,6 +82,7 @@ class _PopularMoviesSectionState extends State<PopularMoviesSection> {
                         enlargeFactor: 0.1,
                         scrollDirection: Axis.horizontal,
                         onPageChanged: (index, reason) {
+                          // Sincronizar el índice del carrusel con el fondo
                           widget.onPageChanged?.call(index);
                         },
                       ),
@@ -131,19 +134,25 @@ class _MovieCard extends StatelessWidget {
                 CachedNetworkImage(
                   imageUrl: movie.backdropUrlW780!,
                   fit: BoxFit.cover,
-                  placeholder: (context, url) => Container(
-                    color: Colors.grey[900],
-                    child: const Center(child: CircularProgressIndicator()),
+                  placeholder: (context, url) => SizedBox.expand(
+                    child: Container(
+                      color: Colors.grey[900],
+                      child: const Center(child: CircularProgressIndicator()),
+                    ),
                   ),
-                  errorWidget: (context, url, error) => Container(
-                    color: Colors.grey[900],
-                    child: const Icon(Icons.error),
+                  errorWidget: (context, url, error) => SizedBox.expand(
+                    child: Container(
+                      color: Colors.grey[900],
+                      child: const Icon(Icons.error),
+                    ),
                   ),
                 )
               else
-                Container(
-                  color: Colors.grey[900],
-                  child: const Icon(Icons.movie, size: 64),
+                SizedBox.expand(
+                  child: Container(
+                    color: Colors.grey[900],
+                    child: const Icon(Icons.movie, size: 64),
+                  ),
                 ),
               Container(
                 decoration: BoxDecoration(

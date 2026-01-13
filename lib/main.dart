@@ -10,7 +10,10 @@ final GetIt getIt = GetIt.instance;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Inicializar Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   // Schema/Targets: Usa AppConfig para centralizar la configuración
   AppInjection(
     getIt: getIt,

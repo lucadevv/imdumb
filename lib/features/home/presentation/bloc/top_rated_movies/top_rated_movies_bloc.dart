@@ -4,22 +4,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:imdumb/core/bloc/base_bloc_mixin.dart';
 import 'package:imdumb/core/utils/constans/app_language.dart';
-import 'package:imdumb/core/utils/exeptions/app_exceptions.dart';
 import 'package:imdumb/features/home/domain/entities/popular_movie_entity.dart';
 import 'package:imdumb/features/home/domain/use_cases/fetch_all_top_rated_movie_usecase.dart';
 
 part 'top_rated_movies_event.dart';
 part 'top_rated_movies_state.dart';
 
-class TopRatedMoviesBloc
-    extends Bloc<TopRatedMoviesEvent, TopRatedMoviesState>
+class TopRatedMoviesBloc extends Bloc<TopRatedMoviesEvent, TopRatedMoviesState>
     with BaseBlocMixin {
   final FetchAllTopRatedMovieUsecase _fetchAllTopRatedMovieUsecase;
 
   TopRatedMoviesBloc({
     required FetchAllTopRatedMovieUsecase fetchAllTopRatedMovieUsecase,
-  })  : _fetchAllTopRatedMovieUsecase = fetchAllTopRatedMovieUsecase,
-        super(TopRatedMoviesState.initial()) {
+  }) : _fetchAllTopRatedMovieUsecase = fetchAllTopRatedMovieUsecase,
+       super(TopRatedMoviesState.initial()) {
     on<FetchTopRatedMoviesEvent>(_fetchTopRatedMoviesEvent);
   }
 
@@ -32,18 +30,19 @@ class TopRatedMoviesBloc
     }
 
     if (!event.isLoadMore) {
-      emit(state.copyWith(
-        status: TopRatedMoviesStatus.loading,
-        movies: [],
-        page: 1,
-        hasMore: true,
-      ));
+      emit(
+        state.copyWith(
+          status: TopRatedMoviesStatus.loading,
+          movies: [],
+          page: 1,
+          hasMore: true,
+        ),
+      );
     } else {
       emit(state.copyWith(status: TopRatedMoviesStatus.loading));
     }
 
-    final response =
-        await _fetchAllTopRatedMovieUsecase.fetchAllTopRatedMovies(
+    final response = await _fetchAllTopRatedMovieUsecase.fetchAllTopRatedMovies(
       page: event.page.toString(),
       language: AppLanguage.spanish,
     );
@@ -59,8 +58,9 @@ class TopRatedMoviesBloc
         );
       },
       (movies) async {
-        final updatedList =
-            event.isLoadMore ? [...state.movies, ...movies] : movies;
+        final updatedList = event.isLoadMore
+            ? [...state.movies, ...movies]
+            : movies;
 
         final hasMore = movies.isNotEmpty && movies.length >= 20;
 

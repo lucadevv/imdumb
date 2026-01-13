@@ -1,8 +1,7 @@
-import 'dart:ui';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:imdumb/core/utils/extension/context_extension.dart';
+import 'package:imdumb/core/widgets/atoms/opacity_overlay.dart';
 import 'package:imdumb/features/movie_detail/domain/entities/movie_detail_entity.dart';
 
 class MovieDetailBackgroundImage extends StatelessWidget {
@@ -39,19 +38,23 @@ class MovieDetailBackgroundImage extends StatelessWidget {
                 fit: BoxFit.cover,
                 width: screenWidth,
                 height: backgroundHeight,
-                placeholder: (context, url) =>
-                    Container(color: context.appColor.surfaceContainer),
-                errorWidget: (context, url, error) =>
-                    Container(color: context.appColor.surfaceContainer),
+                placeholder: (context, url) => SizedBox(
+                  width: screenWidth,
+                  height: backgroundHeight,
+                  child: Container(color: context.appColor.surfaceContainer),
+                ),
+                errorWidget: (context, url, error) => SizedBox(
+                  width: screenWidth,
+                  height: backgroundHeight,
+                  child: Container(color: context.appColor.surfaceContainer),
+                ),
               )
             else
               Container(color: context.appColor.surfaceContainer),
             Positioned.fill(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                child: Container(
-                  color: context.appColor.surface.withValues(alpha: 0.9),
-                ),
+              child: OpacityOverlay(
+                useThemeColor: true,
+                themeColorOpacity: 0.9,
               ),
             ),
           ],

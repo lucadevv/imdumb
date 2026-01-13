@@ -7,10 +7,7 @@ import 'package:imdumb/features/movie_detail/presentation/widgets/cast_card.dart
 class CastSection extends StatelessWidget {
   final List<CastEntity> casts;
 
-  const CastSection({
-    super.key,
-    required this.casts,
-  });
+  const CastSection({super.key, required this.casts});
 
   @override
   Widget build(BuildContext context) {
@@ -22,26 +19,24 @@ class CastSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         24.spaceh,
-        Text(
-          'Elenco',
-          style: context.appTextTheme.titleLarge,
-        ),
+        Text('Elenco', style: context.appTextTheme.titleLarge),
         12.spaceh,
         SizedBox(
-          height: 150,
+          height: 208,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.only(right: 12),
+            padding: const EdgeInsets.only(right: 16),
             itemCount: casts.length,
             itemBuilder: (context, index) {
               final cast = casts[index];
               return Padding(
-                padding: const EdgeInsets.only(right: 12),
+                padding: const EdgeInsets.only(right: 16),
                 child: CastCard(cast: cast),
               );
             },
           ),
         ),
+        16.spaceh,
       ],
     );
   }
