@@ -89,8 +89,8 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
           if (!mounted) return;
           final navigator = Navigator.of(context);
           final scaffoldMessenger = ScaffoldMessenger.of(context);
-          final primaryColor = context.appColor.primary;
-          
+          final primaryColor = Colors.greenAccent;
+
           // SOLID: Dependency Inversion Principle (DIP)
           // El screen depende de la abstracción AnalyticsService, no de la implementación concreta.
           try {
@@ -100,7 +100,9 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
               parameters: {
                 'movie_id': movieDetail.id,
                 'movie_title': movieDetail.title,
-                'has_comment': _commentController.text.isNotEmpty ? 'true' : 'false',
+                'has_comment': _commentController.text.isNotEmpty
+                    ? 'true'
+                    : 'false',
               },
             );
           } catch (e) {
@@ -112,7 +114,10 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
           navigator.pop();
           scaffoldMessenger.showSnackBar(
             SnackBar(
-              content: const Text('¡Recomendación enviada con éxito!'),
+              content: const Text(
+                '¡Recomendación enviada con éxito!',
+                style: TextStyle(color: Colors.black),
+              ),
               backgroundColor: primaryColor,
               behavior: SnackBarBehavior.floating,
               shape: RoundedRectangleBorder(
@@ -159,7 +164,6 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                   context.read<MovieDetailBloc>().add(
                     const FetchMovieDetailEvent(),
                   );
-                  // Esperar un poco para que el refresh se complete
                   await Future.delayed(const Duration(milliseconds: 500));
                 },
                 child: CustomScrollView(

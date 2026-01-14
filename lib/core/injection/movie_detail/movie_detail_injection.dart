@@ -1,6 +1,9 @@
 import 'package:get_it/get_it.dart';
+import 'package:imdumb/core/database/cache_database_service.dart';
+import 'package:imdumb/core/database/sqflite_cache_database_service.dart';
 import 'package:imdumb/core/services/network/api_services.dart';
 import 'package:imdumb/features/movie_detail/data/datasource/movie_detail_datasource.dart';
+import 'package:imdumb/features/movie_detail/data/datasource/local/movie_detail_local_datasource.dart';
 import 'package:imdumb/features/movie_detail/data/datasource/network/movie_detail_datasource_ntw_impl.dart';
 import 'package:imdumb/features/movie_detail/data/repository/movie_detail_repository_impl.dart';
 import 'package:imdumb/features/movie_detail/domain/repository/movie_detail_repository.dart';
@@ -22,10 +25,22 @@ class MovieDetailInjection {
         () => MovieDetailDatasourceNtwImpl(services: _getIt<ApiServices>()),
       );
     }
+    // Registrar CacheDatabaseService con implementación SQLite si no está registrado
+    if (!_getIt.isRegistered<CacheDatabaseService>()) {
+      _getIt.registerLazySingleton<CacheDatabaseService>(
+        () => SqfliteCacheDatabaseService(),
+      );
+    }
+    if (!_getIt.isRegistered<MovieDetailLocalDataSource>()) {
+      _getIt.registerLazySingleton<MovieDetailLocalDataSource>(
+        () => MovieDetailLocalDataSource(cacheService: _getIt<CacheDatabaseService>()),
+      );
+    }
     if (!_getIt.isRegistered<MovieDetailRepository>()) {
       _getIt.registerLazySingleton<MovieDetailRepository>(
         () => MovieDetailRepositoryImpl(
-          datasource: _getIt<MovieDetailDatasource>(),
+          remoteDatasource: _getIt<MovieDetailDatasource>(),
+          localDatasource: _getIt<MovieDetailLocalDataSource>(),
         ),
       );
     }

@@ -6,6 +6,9 @@ import 'package:imdumb/core/database/cache_database_service.dart';
 import 'package:imdumb/core/utils/helpers/date_parser.dart';
 import 'package:imdumb/features/home/data/models/popular_movie_db_model.dart';
 import 'package:imdumb/features/home/data/models/genre_db_model.dart';
+import 'package:imdumb/features/movie_detail/data/models/cast_db_model.dart';
+import 'package:imdumb/features/movie_detail/data/models/movie_detail_db_model.dart';
+import 'package:imdumb/features/movie_detail/data/models/movie_image_db_model.dart';
 
 /// SOLID: Open/Closed Principle (OCP)
 ///
@@ -20,7 +23,7 @@ class DriftCacheDatabaseService implements CacheDatabaseService {
   final AppDatabase _database;
 
   DriftCacheDatabaseService({required AppDatabase database})
-      : _database = database;
+    : _database = database;
 
   // Helper methods para conversión de genreIds
   String? _genreIdsToJson(List<int>? genreIds) {
@@ -140,8 +143,9 @@ class DriftCacheDatabaseService implements CacheDatabaseService {
   @override
   Future<List<PopularMovieDbModel>?> getCachedNowPlayingMovies() async {
     try {
-      final rows =
-          await _database.select(_database.nowPlayingMoviesTable).get();
+      final rows = await _database
+          .select(_database.nowPlayingMoviesTable)
+          .get();
       if (rows.isEmpty) return null;
 
       return rows
@@ -264,7 +268,9 @@ class DriftCacheDatabaseService implements CacheDatabaseService {
       final rows = await _database.select(_database.genresTable).get();
       if (rows.isEmpty) return null;
 
-      return rows.map((row) => GenreDbModel(id: row.id, name: row.name)).toList();
+      return rows
+          .map((row) => GenreDbModel(id: row.id, name: row.name))
+          .toList();
     } catch (e) {
       return null;
     }
@@ -311,8 +317,7 @@ class DriftCacheDatabaseService implements CacheDatabaseService {
   }
 
   @override
-  Future<List<PopularMovieDbModel>?> getCachedMoviesByGenre(
-      int genreId) async {
+  Future<List<PopularMovieDbModel>?> getCachedMoviesByGenre(int genreId) async {
     try {
       final query = _database.select(_database.moviesByGenreTable)
         ..where((tbl) => tbl.genreId.equals(genreId));
@@ -343,6 +348,152 @@ class DriftCacheDatabaseService implements CacheDatabaseService {
           )
           .toList();
     } catch (e) {
+      return null;
+    }
+  }
+
+  @override
+  Future<void> cacheMovieDetail(int movieId, MovieDetailDbModel movieDetail) async {
+    try {
+      await (_database.delete(_database.movieDetailsTable)
+            ..where((tbl) => tbl.id.equals(movieId))).go();
+
+      await _database.into(_database.movieDetailsTable).insert(
+            MovieDetailsTableCompanion(
+              id: drift.Value(movieDetail.id ?? movieId),
+              title: drift.Value(movieDetail.title),
+              overview: drift.Value(movieDetail.overview),
+              voteAverage: drift.Value(movieDetail.voteAverage),
+              voteCount: drift.Value(movieDetail.voteCount),
+              releaseDate: drift.Value(movieDetail.releaseDate),
+              backdropPath: drift.Value(movieDetail.backdropPath),
+              posterPath: drift.Value(movieDetail.posterPath),
+              runtime: drift.Value(movieDetail.runtime),
+              genres: drift.Value(movieDetail.genres != null 
+                  ? jsonEncode(movieDetail.genres) 
+                  : null),
+            ),
+          );
+    } catch (e) {
+      debugPrint('Error al cachear detalle de película: $e');
+    }
+  }
+
+  @override
+  Future<MovieDetailDbModel?> getCachedMovieDetail(int movieId) async {
+    try {
+      final query = _database.select(_database.movieDetailsTable)
+        ..where((tbl) => tbl.id.equals(movieId));
+      final rows = await query.get();
+      if (rows.isEmpty) return null;
+
+      final row = rows.first;
+      return MovieDetailDbModel(
+        id: row.id,
+        title: row.title,
+        overview: row.overview,
+        voteAverage: row.voteAverage,
+        voteCount: row.voteCount,
+        releaseDate: row.releaseDate,
+        backdropPath: row.backdropPath,
+        posterPath: row.posterPath,
+        runtime: row.runtime,
+        genres: row.genres != null
+            ? (jsonDecode(row.genres!) as List)
+                .map((e) => e as Map<String, dynamic>)
+                .toList()
+            : null,
+      );
+    } catch (e) {
+      debugPrint('Error al obtener detalle de película: $e');
+      return null;
+    }
+  }
+
+  @override
+  Future<void> cacheMovieImages(int movieId, List<MovieImageDbModel> images) async {
+    try {
+      await (_database.delete(_database.movieImagesTable)
+            ..where((tbl) => tbl.movieId.equals(movieId))).go();
+
+      await _database.batch((batch) {
+        for (final image in images) {
+          if (image.filePath == null || image.filePath!.isEmpty) continue;
+          batch.insert(
+            _database.movieImagesTable,
+            MovieImagesTableCompanion(
+              movieId: drift.Value(movieId),
+              filePath: drift.Value(image.filePath!),
+            ),
+          );
+        }
+      });
+    } catch (e) {
+      debugPrint('Error al cachear imágenes de película: $e');
+    }
+  }
+
+  @override
+  Future<List<MovieImageDbModel>?> getCachedMovieImages(int movieId) async {
+    try {
+      final query = _database.select(_database.movieImagesTable)
+        ..where((tbl) => tbl.movieId.equals(movieId));
+      final rows = await query.get();
+      if (rows.isEmpty) return null;
+
+      return rows
+          .map((row) => MovieImageDbModel(filePath: row.filePath))
+          .toList();
+    } catch (e) {
+      debugPrint('Error al obtener imágenes de película: $e');
+      return null;
+    }
+  }
+
+  @override
+  Future<void> cacheMovieCredits(int movieId, List<CastDbModel> casts) async {
+    try {
+      await (_database.delete(_database.movieCreditsTable)
+            ..where((tbl) => tbl.movieId.equals(movieId))).go();
+
+      await _database.batch((batch) {
+        for (final cast in casts) {
+          if (cast.id == null) continue;
+          batch.insert(
+            _database.movieCreditsTable,
+            MovieCreditsTableCompanion(
+              movieId: drift.Value(movieId),
+              castId: drift.Value(cast.id!),
+              name: drift.Value(cast.name),
+              character: drift.Value(cast.character),
+              profilePath: drift.Value(cast.profilePath),
+            ),
+          );
+        }
+      });
+    } catch (e) {
+      debugPrint('Error al cachear créditos de película: $e');
+    }
+  }
+
+  @override
+  Future<List<CastDbModel>?> getCachedMovieCredits(int movieId) async {
+    try {
+      final query = _database.select(_database.movieCreditsTable)
+        ..where((tbl) => tbl.movieId.equals(movieId));
+      final rows = await query.get();
+      if (rows.isEmpty) return null;
+
+      return rows
+          .map((row) => CastDbModel(
+                id: row.castId,
+                name: row.name,
+                character: row.character,
+                profilePath: row.profilePath,
+              ))
+          .toList();
+    } catch (e) {
+      debugPrint('Error al obtener créditos de película: $e');
       return null;
     }
   }

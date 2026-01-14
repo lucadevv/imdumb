@@ -1,4 +1,6 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:imdumb/core/constants/app_keys.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:imdumb/core/utils/extension/context_extension.dart';
 import 'package:imdumb/core/utils/extension/sizedbox_extension.dart';
@@ -38,13 +40,18 @@ class ShimmerMovieDetail extends StatelessWidget {
           expandedHeight: expandedHeight,
           backgroundColor: Colors.transparent,
           elevation: 0,
+          leading: IconButton(
+            key: AppKeys.movieDetailBackButton,
+            icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+            onPressed: () {
+              context.router.pop();
+            },
+          ),
           flexibleSpace: FlexibleSpaceBar(
             background: Shimmer.fromColors(
               baseColor: appColor.surfaceContainer,
               highlightColor: appColor.surfaceContainerHigh,
-              child: Container(
-                color: appColor.surfaceContainer,
-              ),
+              child: Container(color: appColor.surfaceContainer),
             ),
           ),
         ),

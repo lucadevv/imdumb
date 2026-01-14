@@ -3610,6 +3610,1216 @@ class MoviesByGenreTableCompanion
   }
 }
 
+class $MovieDetailsTableTable extends MovieDetailsTable
+    with TableInfo<$MovieDetailsTableTable, MovieDetailsTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MovieDetailsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _overviewMeta = const VerificationMeta(
+    'overview',
+  );
+  @override
+  late final GeneratedColumn<String> overview = GeneratedColumn<String>(
+    'overview',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _voteAverageMeta = const VerificationMeta(
+    'voteAverage',
+  );
+  @override
+  late final GeneratedColumn<double> voteAverage = GeneratedColumn<double>(
+    'vote_average',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _voteCountMeta = const VerificationMeta(
+    'voteCount',
+  );
+  @override
+  late final GeneratedColumn<int> voteCount = GeneratedColumn<int>(
+    'vote_count',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _releaseDateMeta = const VerificationMeta(
+    'releaseDate',
+  );
+  @override
+  late final GeneratedColumn<String> releaseDate = GeneratedColumn<String>(
+    'release_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _backdropPathMeta = const VerificationMeta(
+    'backdropPath',
+  );
+  @override
+  late final GeneratedColumn<String> backdropPath = GeneratedColumn<String>(
+    'backdrop_path',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _posterPathMeta = const VerificationMeta(
+    'posterPath',
+  );
+  @override
+  late final GeneratedColumn<String> posterPath = GeneratedColumn<String>(
+    'poster_path',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _runtimeMeta = const VerificationMeta(
+    'runtime',
+  );
+  @override
+  late final GeneratedColumn<int> runtime = GeneratedColumn<int>(
+    'runtime',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _genresMeta = const VerificationMeta('genres');
+  @override
+  late final GeneratedColumn<String> genres = GeneratedColumn<String>(
+    'genres',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    title,
+    overview,
+    voteAverage,
+    voteCount,
+    releaseDate,
+    backdropPath,
+    posterPath,
+    runtime,
+    genres,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'movie_details_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MovieDetailsTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    }
+    if (data.containsKey('overview')) {
+      context.handle(
+        _overviewMeta,
+        overview.isAcceptableOrUnknown(data['overview']!, _overviewMeta),
+      );
+    }
+    if (data.containsKey('vote_average')) {
+      context.handle(
+        _voteAverageMeta,
+        voteAverage.isAcceptableOrUnknown(
+          data['vote_average']!,
+          _voteAverageMeta,
+        ),
+      );
+    }
+    if (data.containsKey('vote_count')) {
+      context.handle(
+        _voteCountMeta,
+        voteCount.isAcceptableOrUnknown(data['vote_count']!, _voteCountMeta),
+      );
+    }
+    if (data.containsKey('release_date')) {
+      context.handle(
+        _releaseDateMeta,
+        releaseDate.isAcceptableOrUnknown(
+          data['release_date']!,
+          _releaseDateMeta,
+        ),
+      );
+    }
+    if (data.containsKey('backdrop_path')) {
+      context.handle(
+        _backdropPathMeta,
+        backdropPath.isAcceptableOrUnknown(
+          data['backdrop_path']!,
+          _backdropPathMeta,
+        ),
+      );
+    }
+    if (data.containsKey('poster_path')) {
+      context.handle(
+        _posterPathMeta,
+        posterPath.isAcceptableOrUnknown(data['poster_path']!, _posterPathMeta),
+      );
+    }
+    if (data.containsKey('runtime')) {
+      context.handle(
+        _runtimeMeta,
+        runtime.isAcceptableOrUnknown(data['runtime']!, _runtimeMeta),
+      );
+    }
+    if (data.containsKey('genres')) {
+      context.handle(
+        _genresMeta,
+        genres.isAcceptableOrUnknown(data['genres']!, _genresMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  MovieDetailsTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MovieDetailsTableData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      ),
+      overview: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}overview'],
+      ),
+      voteAverage: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}vote_average'],
+      ),
+      voteCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}vote_count'],
+      ),
+      releaseDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}release_date'],
+      ),
+      backdropPath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}backdrop_path'],
+      ),
+      posterPath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}poster_path'],
+      ),
+      runtime: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}runtime'],
+      ),
+      genres: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}genres'],
+      ),
+    );
+  }
+
+  @override
+  $MovieDetailsTableTable createAlias(String alias) {
+    return $MovieDetailsTableTable(attachedDatabase, alias);
+  }
+}
+
+class MovieDetailsTableData extends DataClass
+    implements Insertable<MovieDetailsTableData> {
+  final int id;
+  final String? title;
+  final String? overview;
+  final double? voteAverage;
+  final int? voteCount;
+  final String? releaseDate;
+  final String? backdropPath;
+  final String? posterPath;
+  final int? runtime;
+  final String? genres;
+  const MovieDetailsTableData({
+    required this.id,
+    this.title,
+    this.overview,
+    this.voteAverage,
+    this.voteCount,
+    this.releaseDate,
+    this.backdropPath,
+    this.posterPath,
+    this.runtime,
+    this.genres,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    if (!nullToAbsent || title != null) {
+      map['title'] = Variable<String>(title);
+    }
+    if (!nullToAbsent || overview != null) {
+      map['overview'] = Variable<String>(overview);
+    }
+    if (!nullToAbsent || voteAverage != null) {
+      map['vote_average'] = Variable<double>(voteAverage);
+    }
+    if (!nullToAbsent || voteCount != null) {
+      map['vote_count'] = Variable<int>(voteCount);
+    }
+    if (!nullToAbsent || releaseDate != null) {
+      map['release_date'] = Variable<String>(releaseDate);
+    }
+    if (!nullToAbsent || backdropPath != null) {
+      map['backdrop_path'] = Variable<String>(backdropPath);
+    }
+    if (!nullToAbsent || posterPath != null) {
+      map['poster_path'] = Variable<String>(posterPath);
+    }
+    if (!nullToAbsent || runtime != null) {
+      map['runtime'] = Variable<int>(runtime);
+    }
+    if (!nullToAbsent || genres != null) {
+      map['genres'] = Variable<String>(genres);
+    }
+    return map;
+  }
+
+  MovieDetailsTableCompanion toCompanion(bool nullToAbsent) {
+    return MovieDetailsTableCompanion(
+      id: Value(id),
+      title: title == null && nullToAbsent
+          ? const Value.absent()
+          : Value(title),
+      overview: overview == null && nullToAbsent
+          ? const Value.absent()
+          : Value(overview),
+      voteAverage: voteAverage == null && nullToAbsent
+          ? const Value.absent()
+          : Value(voteAverage),
+      voteCount: voteCount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(voteCount),
+      releaseDate: releaseDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(releaseDate),
+      backdropPath: backdropPath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(backdropPath),
+      posterPath: posterPath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(posterPath),
+      runtime: runtime == null && nullToAbsent
+          ? const Value.absent()
+          : Value(runtime),
+      genres: genres == null && nullToAbsent
+          ? const Value.absent()
+          : Value(genres),
+    );
+  }
+
+  factory MovieDetailsTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MovieDetailsTableData(
+      id: serializer.fromJson<int>(json['id']),
+      title: serializer.fromJson<String?>(json['title']),
+      overview: serializer.fromJson<String?>(json['overview']),
+      voteAverage: serializer.fromJson<double?>(json['voteAverage']),
+      voteCount: serializer.fromJson<int?>(json['voteCount']),
+      releaseDate: serializer.fromJson<String?>(json['releaseDate']),
+      backdropPath: serializer.fromJson<String?>(json['backdropPath']),
+      posterPath: serializer.fromJson<String?>(json['posterPath']),
+      runtime: serializer.fromJson<int?>(json['runtime']),
+      genres: serializer.fromJson<String?>(json['genres']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'title': serializer.toJson<String?>(title),
+      'overview': serializer.toJson<String?>(overview),
+      'voteAverage': serializer.toJson<double?>(voteAverage),
+      'voteCount': serializer.toJson<int?>(voteCount),
+      'releaseDate': serializer.toJson<String?>(releaseDate),
+      'backdropPath': serializer.toJson<String?>(backdropPath),
+      'posterPath': serializer.toJson<String?>(posterPath),
+      'runtime': serializer.toJson<int?>(runtime),
+      'genres': serializer.toJson<String?>(genres),
+    };
+  }
+
+  MovieDetailsTableData copyWith({
+    int? id,
+    Value<String?> title = const Value.absent(),
+    Value<String?> overview = const Value.absent(),
+    Value<double?> voteAverage = const Value.absent(),
+    Value<int?> voteCount = const Value.absent(),
+    Value<String?> releaseDate = const Value.absent(),
+    Value<String?> backdropPath = const Value.absent(),
+    Value<String?> posterPath = const Value.absent(),
+    Value<int?> runtime = const Value.absent(),
+    Value<String?> genres = const Value.absent(),
+  }) => MovieDetailsTableData(
+    id: id ?? this.id,
+    title: title.present ? title.value : this.title,
+    overview: overview.present ? overview.value : this.overview,
+    voteAverage: voteAverage.present ? voteAverage.value : this.voteAverage,
+    voteCount: voteCount.present ? voteCount.value : this.voteCount,
+    releaseDate: releaseDate.present ? releaseDate.value : this.releaseDate,
+    backdropPath: backdropPath.present ? backdropPath.value : this.backdropPath,
+    posterPath: posterPath.present ? posterPath.value : this.posterPath,
+    runtime: runtime.present ? runtime.value : this.runtime,
+    genres: genres.present ? genres.value : this.genres,
+  );
+  MovieDetailsTableData copyWithCompanion(MovieDetailsTableCompanion data) {
+    return MovieDetailsTableData(
+      id: data.id.present ? data.id.value : this.id,
+      title: data.title.present ? data.title.value : this.title,
+      overview: data.overview.present ? data.overview.value : this.overview,
+      voteAverage: data.voteAverage.present
+          ? data.voteAverage.value
+          : this.voteAverage,
+      voteCount: data.voteCount.present ? data.voteCount.value : this.voteCount,
+      releaseDate: data.releaseDate.present
+          ? data.releaseDate.value
+          : this.releaseDate,
+      backdropPath: data.backdropPath.present
+          ? data.backdropPath.value
+          : this.backdropPath,
+      posterPath: data.posterPath.present
+          ? data.posterPath.value
+          : this.posterPath,
+      runtime: data.runtime.present ? data.runtime.value : this.runtime,
+      genres: data.genres.present ? data.genres.value : this.genres,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MovieDetailsTableData(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('overview: $overview, ')
+          ..write('voteAverage: $voteAverage, ')
+          ..write('voteCount: $voteCount, ')
+          ..write('releaseDate: $releaseDate, ')
+          ..write('backdropPath: $backdropPath, ')
+          ..write('posterPath: $posterPath, ')
+          ..write('runtime: $runtime, ')
+          ..write('genres: $genres')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    title,
+    overview,
+    voteAverage,
+    voteCount,
+    releaseDate,
+    backdropPath,
+    posterPath,
+    runtime,
+    genres,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MovieDetailsTableData &&
+          other.id == this.id &&
+          other.title == this.title &&
+          other.overview == this.overview &&
+          other.voteAverage == this.voteAverage &&
+          other.voteCount == this.voteCount &&
+          other.releaseDate == this.releaseDate &&
+          other.backdropPath == this.backdropPath &&
+          other.posterPath == this.posterPath &&
+          other.runtime == this.runtime &&
+          other.genres == this.genres);
+}
+
+class MovieDetailsTableCompanion
+    extends UpdateCompanion<MovieDetailsTableData> {
+  final Value<int> id;
+  final Value<String?> title;
+  final Value<String?> overview;
+  final Value<double?> voteAverage;
+  final Value<int?> voteCount;
+  final Value<String?> releaseDate;
+  final Value<String?> backdropPath;
+  final Value<String?> posterPath;
+  final Value<int?> runtime;
+  final Value<String?> genres;
+  const MovieDetailsTableCompanion({
+    this.id = const Value.absent(),
+    this.title = const Value.absent(),
+    this.overview = const Value.absent(),
+    this.voteAverage = const Value.absent(),
+    this.voteCount = const Value.absent(),
+    this.releaseDate = const Value.absent(),
+    this.backdropPath = const Value.absent(),
+    this.posterPath = const Value.absent(),
+    this.runtime = const Value.absent(),
+    this.genres = const Value.absent(),
+  });
+  MovieDetailsTableCompanion.insert({
+    this.id = const Value.absent(),
+    this.title = const Value.absent(),
+    this.overview = const Value.absent(),
+    this.voteAverage = const Value.absent(),
+    this.voteCount = const Value.absent(),
+    this.releaseDate = const Value.absent(),
+    this.backdropPath = const Value.absent(),
+    this.posterPath = const Value.absent(),
+    this.runtime = const Value.absent(),
+    this.genres = const Value.absent(),
+  });
+  static Insertable<MovieDetailsTableData> custom({
+    Expression<int>? id,
+    Expression<String>? title,
+    Expression<String>? overview,
+    Expression<double>? voteAverage,
+    Expression<int>? voteCount,
+    Expression<String>? releaseDate,
+    Expression<String>? backdropPath,
+    Expression<String>? posterPath,
+    Expression<int>? runtime,
+    Expression<String>? genres,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (title != null) 'title': title,
+      if (overview != null) 'overview': overview,
+      if (voteAverage != null) 'vote_average': voteAverage,
+      if (voteCount != null) 'vote_count': voteCount,
+      if (releaseDate != null) 'release_date': releaseDate,
+      if (backdropPath != null) 'backdrop_path': backdropPath,
+      if (posterPath != null) 'poster_path': posterPath,
+      if (runtime != null) 'runtime': runtime,
+      if (genres != null) 'genres': genres,
+    });
+  }
+
+  MovieDetailsTableCompanion copyWith({
+    Value<int>? id,
+    Value<String?>? title,
+    Value<String?>? overview,
+    Value<double?>? voteAverage,
+    Value<int?>? voteCount,
+    Value<String?>? releaseDate,
+    Value<String?>? backdropPath,
+    Value<String?>? posterPath,
+    Value<int?>? runtime,
+    Value<String?>? genres,
+  }) {
+    return MovieDetailsTableCompanion(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      overview: overview ?? this.overview,
+      voteAverage: voteAverage ?? this.voteAverage,
+      voteCount: voteCount ?? this.voteCount,
+      releaseDate: releaseDate ?? this.releaseDate,
+      backdropPath: backdropPath ?? this.backdropPath,
+      posterPath: posterPath ?? this.posterPath,
+      runtime: runtime ?? this.runtime,
+      genres: genres ?? this.genres,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (overview.present) {
+      map['overview'] = Variable<String>(overview.value);
+    }
+    if (voteAverage.present) {
+      map['vote_average'] = Variable<double>(voteAverage.value);
+    }
+    if (voteCount.present) {
+      map['vote_count'] = Variable<int>(voteCount.value);
+    }
+    if (releaseDate.present) {
+      map['release_date'] = Variable<String>(releaseDate.value);
+    }
+    if (backdropPath.present) {
+      map['backdrop_path'] = Variable<String>(backdropPath.value);
+    }
+    if (posterPath.present) {
+      map['poster_path'] = Variable<String>(posterPath.value);
+    }
+    if (runtime.present) {
+      map['runtime'] = Variable<int>(runtime.value);
+    }
+    if (genres.present) {
+      map['genres'] = Variable<String>(genres.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MovieDetailsTableCompanion(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('overview: $overview, ')
+          ..write('voteAverage: $voteAverage, ')
+          ..write('voteCount: $voteCount, ')
+          ..write('releaseDate: $releaseDate, ')
+          ..write('backdropPath: $backdropPath, ')
+          ..write('posterPath: $posterPath, ')
+          ..write('runtime: $runtime, ')
+          ..write('genres: $genres')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $MovieImagesTableTable extends MovieImagesTable
+    with TableInfo<$MovieImagesTableTable, MovieImagesTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MovieImagesTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _movieIdMeta = const VerificationMeta(
+    'movieId',
+  );
+  @override
+  late final GeneratedColumn<int> movieId = GeneratedColumn<int>(
+    'movie_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _filePathMeta = const VerificationMeta(
+    'filePath',
+  );
+  @override
+  late final GeneratedColumn<String> filePath = GeneratedColumn<String>(
+    'file_path',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [movieId, filePath];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'movie_images_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MovieImagesTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('movie_id')) {
+      context.handle(
+        _movieIdMeta,
+        movieId.isAcceptableOrUnknown(data['movie_id']!, _movieIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_movieIdMeta);
+    }
+    if (data.containsKey('file_path')) {
+      context.handle(
+        _filePathMeta,
+        filePath.isAcceptableOrUnknown(data['file_path']!, _filePathMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_filePathMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {movieId, filePath};
+  @override
+  MovieImagesTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MovieImagesTableData(
+      movieId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}movie_id'],
+      )!,
+      filePath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}file_path'],
+      )!,
+    );
+  }
+
+  @override
+  $MovieImagesTableTable createAlias(String alias) {
+    return $MovieImagesTableTable(attachedDatabase, alias);
+  }
+}
+
+class MovieImagesTableData extends DataClass
+    implements Insertable<MovieImagesTableData> {
+  final int movieId;
+  final String filePath;
+  const MovieImagesTableData({required this.movieId, required this.filePath});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['movie_id'] = Variable<int>(movieId);
+    map['file_path'] = Variable<String>(filePath);
+    return map;
+  }
+
+  MovieImagesTableCompanion toCompanion(bool nullToAbsent) {
+    return MovieImagesTableCompanion(
+      movieId: Value(movieId),
+      filePath: Value(filePath),
+    );
+  }
+
+  factory MovieImagesTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MovieImagesTableData(
+      movieId: serializer.fromJson<int>(json['movieId']),
+      filePath: serializer.fromJson<String>(json['filePath']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'movieId': serializer.toJson<int>(movieId),
+      'filePath': serializer.toJson<String>(filePath),
+    };
+  }
+
+  MovieImagesTableData copyWith({int? movieId, String? filePath}) =>
+      MovieImagesTableData(
+        movieId: movieId ?? this.movieId,
+        filePath: filePath ?? this.filePath,
+      );
+  MovieImagesTableData copyWithCompanion(MovieImagesTableCompanion data) {
+    return MovieImagesTableData(
+      movieId: data.movieId.present ? data.movieId.value : this.movieId,
+      filePath: data.filePath.present ? data.filePath.value : this.filePath,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MovieImagesTableData(')
+          ..write('movieId: $movieId, ')
+          ..write('filePath: $filePath')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(movieId, filePath);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MovieImagesTableData &&
+          other.movieId == this.movieId &&
+          other.filePath == this.filePath);
+}
+
+class MovieImagesTableCompanion extends UpdateCompanion<MovieImagesTableData> {
+  final Value<int> movieId;
+  final Value<String> filePath;
+  final Value<int> rowid;
+  const MovieImagesTableCompanion({
+    this.movieId = const Value.absent(),
+    this.filePath = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  MovieImagesTableCompanion.insert({
+    required int movieId,
+    required String filePath,
+    this.rowid = const Value.absent(),
+  }) : movieId = Value(movieId),
+       filePath = Value(filePath);
+  static Insertable<MovieImagesTableData> custom({
+    Expression<int>? movieId,
+    Expression<String>? filePath,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (movieId != null) 'movie_id': movieId,
+      if (filePath != null) 'file_path': filePath,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  MovieImagesTableCompanion copyWith({
+    Value<int>? movieId,
+    Value<String>? filePath,
+    Value<int>? rowid,
+  }) {
+    return MovieImagesTableCompanion(
+      movieId: movieId ?? this.movieId,
+      filePath: filePath ?? this.filePath,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (movieId.present) {
+      map['movie_id'] = Variable<int>(movieId.value);
+    }
+    if (filePath.present) {
+      map['file_path'] = Variable<String>(filePath.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MovieImagesTableCompanion(')
+          ..write('movieId: $movieId, ')
+          ..write('filePath: $filePath, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $MovieCreditsTableTable extends MovieCreditsTable
+    with TableInfo<$MovieCreditsTableTable, MovieCreditsTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MovieCreditsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _movieIdMeta = const VerificationMeta(
+    'movieId',
+  );
+  @override
+  late final GeneratedColumn<int> movieId = GeneratedColumn<int>(
+    'movie_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _castIdMeta = const VerificationMeta('castId');
+  @override
+  late final GeneratedColumn<int> castId = GeneratedColumn<int>(
+    'cast_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _characterMeta = const VerificationMeta(
+    'character',
+  );
+  @override
+  late final GeneratedColumn<String> character = GeneratedColumn<String>(
+    'character',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _profilePathMeta = const VerificationMeta(
+    'profilePath',
+  );
+  @override
+  late final GeneratedColumn<String> profilePath = GeneratedColumn<String>(
+    'profile_path',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    movieId,
+    castId,
+    name,
+    character,
+    profilePath,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'movie_credits_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MovieCreditsTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('movie_id')) {
+      context.handle(
+        _movieIdMeta,
+        movieId.isAcceptableOrUnknown(data['movie_id']!, _movieIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_movieIdMeta);
+    }
+    if (data.containsKey('cast_id')) {
+      context.handle(
+        _castIdMeta,
+        castId.isAcceptableOrUnknown(data['cast_id']!, _castIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_castIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    }
+    if (data.containsKey('character')) {
+      context.handle(
+        _characterMeta,
+        character.isAcceptableOrUnknown(data['character']!, _characterMeta),
+      );
+    }
+    if (data.containsKey('profile_path')) {
+      context.handle(
+        _profilePathMeta,
+        profilePath.isAcceptableOrUnknown(
+          data['profile_path']!,
+          _profilePathMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {movieId, castId};
+  @override
+  MovieCreditsTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MovieCreditsTableData(
+      movieId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}movie_id'],
+      )!,
+      castId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}cast_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      ),
+      character: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}character'],
+      ),
+      profilePath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}profile_path'],
+      ),
+    );
+  }
+
+  @override
+  $MovieCreditsTableTable createAlias(String alias) {
+    return $MovieCreditsTableTable(attachedDatabase, alias);
+  }
+}
+
+class MovieCreditsTableData extends DataClass
+    implements Insertable<MovieCreditsTableData> {
+  final int movieId;
+  final int castId;
+  final String? name;
+  final String? character;
+  final String? profilePath;
+  const MovieCreditsTableData({
+    required this.movieId,
+    required this.castId,
+    this.name,
+    this.character,
+    this.profilePath,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['movie_id'] = Variable<int>(movieId);
+    map['cast_id'] = Variable<int>(castId);
+    if (!nullToAbsent || name != null) {
+      map['name'] = Variable<String>(name);
+    }
+    if (!nullToAbsent || character != null) {
+      map['character'] = Variable<String>(character);
+    }
+    if (!nullToAbsent || profilePath != null) {
+      map['profile_path'] = Variable<String>(profilePath);
+    }
+    return map;
+  }
+
+  MovieCreditsTableCompanion toCompanion(bool nullToAbsent) {
+    return MovieCreditsTableCompanion(
+      movieId: Value(movieId),
+      castId: Value(castId),
+      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+      character: character == null && nullToAbsent
+          ? const Value.absent()
+          : Value(character),
+      profilePath: profilePath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(profilePath),
+    );
+  }
+
+  factory MovieCreditsTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MovieCreditsTableData(
+      movieId: serializer.fromJson<int>(json['movieId']),
+      castId: serializer.fromJson<int>(json['castId']),
+      name: serializer.fromJson<String?>(json['name']),
+      character: serializer.fromJson<String?>(json['character']),
+      profilePath: serializer.fromJson<String?>(json['profilePath']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'movieId': serializer.toJson<int>(movieId),
+      'castId': serializer.toJson<int>(castId),
+      'name': serializer.toJson<String?>(name),
+      'character': serializer.toJson<String?>(character),
+      'profilePath': serializer.toJson<String?>(profilePath),
+    };
+  }
+
+  MovieCreditsTableData copyWith({
+    int? movieId,
+    int? castId,
+    Value<String?> name = const Value.absent(),
+    Value<String?> character = const Value.absent(),
+    Value<String?> profilePath = const Value.absent(),
+  }) => MovieCreditsTableData(
+    movieId: movieId ?? this.movieId,
+    castId: castId ?? this.castId,
+    name: name.present ? name.value : this.name,
+    character: character.present ? character.value : this.character,
+    profilePath: profilePath.present ? profilePath.value : this.profilePath,
+  );
+  MovieCreditsTableData copyWithCompanion(MovieCreditsTableCompanion data) {
+    return MovieCreditsTableData(
+      movieId: data.movieId.present ? data.movieId.value : this.movieId,
+      castId: data.castId.present ? data.castId.value : this.castId,
+      name: data.name.present ? data.name.value : this.name,
+      character: data.character.present ? data.character.value : this.character,
+      profilePath: data.profilePath.present
+          ? data.profilePath.value
+          : this.profilePath,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MovieCreditsTableData(')
+          ..write('movieId: $movieId, ')
+          ..write('castId: $castId, ')
+          ..write('name: $name, ')
+          ..write('character: $character, ')
+          ..write('profilePath: $profilePath')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(movieId, castId, name, character, profilePath);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MovieCreditsTableData &&
+          other.movieId == this.movieId &&
+          other.castId == this.castId &&
+          other.name == this.name &&
+          other.character == this.character &&
+          other.profilePath == this.profilePath);
+}
+
+class MovieCreditsTableCompanion
+    extends UpdateCompanion<MovieCreditsTableData> {
+  final Value<int> movieId;
+  final Value<int> castId;
+  final Value<String?> name;
+  final Value<String?> character;
+  final Value<String?> profilePath;
+  final Value<int> rowid;
+  const MovieCreditsTableCompanion({
+    this.movieId = const Value.absent(),
+    this.castId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.character = const Value.absent(),
+    this.profilePath = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  MovieCreditsTableCompanion.insert({
+    required int movieId,
+    required int castId,
+    this.name = const Value.absent(),
+    this.character = const Value.absent(),
+    this.profilePath = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : movieId = Value(movieId),
+       castId = Value(castId);
+  static Insertable<MovieCreditsTableData> custom({
+    Expression<int>? movieId,
+    Expression<int>? castId,
+    Expression<String>? name,
+    Expression<String>? character,
+    Expression<String>? profilePath,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (movieId != null) 'movie_id': movieId,
+      if (castId != null) 'cast_id': castId,
+      if (name != null) 'name': name,
+      if (character != null) 'character': character,
+      if (profilePath != null) 'profile_path': profilePath,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  MovieCreditsTableCompanion copyWith({
+    Value<int>? movieId,
+    Value<int>? castId,
+    Value<String?>? name,
+    Value<String?>? character,
+    Value<String?>? profilePath,
+    Value<int>? rowid,
+  }) {
+    return MovieCreditsTableCompanion(
+      movieId: movieId ?? this.movieId,
+      castId: castId ?? this.castId,
+      name: name ?? this.name,
+      character: character ?? this.character,
+      profilePath: profilePath ?? this.profilePath,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (movieId.present) {
+      map['movie_id'] = Variable<int>(movieId.value);
+    }
+    if (castId.present) {
+      map['cast_id'] = Variable<int>(castId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (character.present) {
+      map['character'] = Variable<String>(character.value);
+    }
+    if (profilePath.present) {
+      map['profile_path'] = Variable<String>(profilePath.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MovieCreditsTableCompanion(')
+          ..write('movieId: $movieId, ')
+          ..write('castId: $castId, ')
+          ..write('name: $name, ')
+          ..write('character: $character, ')
+          ..write('profilePath: $profilePath, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -3622,6 +4832,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $GenresTableTable genresTable = $GenresTableTable(this);
   late final $MoviesByGenreTableTable moviesByGenreTable =
       $MoviesByGenreTableTable(this);
+  late final $MovieDetailsTableTable movieDetailsTable =
+      $MovieDetailsTableTable(this);
+  late final $MovieImagesTableTable movieImagesTable = $MovieImagesTableTable(
+    this,
+  );
+  late final $MovieCreditsTableTable movieCreditsTable =
+      $MovieCreditsTableTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -3632,6 +4849,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     topRatedMoviesTable,
     genresTable,
     moviesByGenreTable,
+    movieDetailsTable,
+    movieImagesTable,
+    movieCreditsTable,
   ];
 }
 
@@ -5362,6 +6582,684 @@ typedef $$MoviesByGenreTableTableProcessedTableManager =
       MoviesByGenreTableData,
       PrefetchHooks Function()
     >;
+typedef $$MovieDetailsTableTableCreateCompanionBuilder =
+    MovieDetailsTableCompanion Function({
+      Value<int> id,
+      Value<String?> title,
+      Value<String?> overview,
+      Value<double?> voteAverage,
+      Value<int?> voteCount,
+      Value<String?> releaseDate,
+      Value<String?> backdropPath,
+      Value<String?> posterPath,
+      Value<int?> runtime,
+      Value<String?> genres,
+    });
+typedef $$MovieDetailsTableTableUpdateCompanionBuilder =
+    MovieDetailsTableCompanion Function({
+      Value<int> id,
+      Value<String?> title,
+      Value<String?> overview,
+      Value<double?> voteAverage,
+      Value<int?> voteCount,
+      Value<String?> releaseDate,
+      Value<String?> backdropPath,
+      Value<String?> posterPath,
+      Value<int?> runtime,
+      Value<String?> genres,
+    });
+
+class $$MovieDetailsTableTableFilterComposer
+    extends Composer<_$AppDatabase, $MovieDetailsTableTable> {
+  $$MovieDetailsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get overview => $composableBuilder(
+    column: $table.overview,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get voteAverage => $composableBuilder(
+    column: $table.voteAverage,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get voteCount => $composableBuilder(
+    column: $table.voteCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get releaseDate => $composableBuilder(
+    column: $table.releaseDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get backdropPath => $composableBuilder(
+    column: $table.backdropPath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get posterPath => $composableBuilder(
+    column: $table.posterPath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get runtime => $composableBuilder(
+    column: $table.runtime,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get genres => $composableBuilder(
+    column: $table.genres,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$MovieDetailsTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $MovieDetailsTableTable> {
+  $$MovieDetailsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get overview => $composableBuilder(
+    column: $table.overview,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get voteAverage => $composableBuilder(
+    column: $table.voteAverage,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get voteCount => $composableBuilder(
+    column: $table.voteCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get releaseDate => $composableBuilder(
+    column: $table.releaseDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get backdropPath => $composableBuilder(
+    column: $table.backdropPath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get posterPath => $composableBuilder(
+    column: $table.posterPath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get runtime => $composableBuilder(
+    column: $table.runtime,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get genres => $composableBuilder(
+    column: $table.genres,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$MovieDetailsTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MovieDetailsTableTable> {
+  $$MovieDetailsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get overview =>
+      $composableBuilder(column: $table.overview, builder: (column) => column);
+
+  GeneratedColumn<double> get voteAverage => $composableBuilder(
+    column: $table.voteAverage,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get voteCount =>
+      $composableBuilder(column: $table.voteCount, builder: (column) => column);
+
+  GeneratedColumn<String> get releaseDate => $composableBuilder(
+    column: $table.releaseDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get backdropPath => $composableBuilder(
+    column: $table.backdropPath,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get posterPath => $composableBuilder(
+    column: $table.posterPath,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get runtime =>
+      $composableBuilder(column: $table.runtime, builder: (column) => column);
+
+  GeneratedColumn<String> get genres =>
+      $composableBuilder(column: $table.genres, builder: (column) => column);
+}
+
+class $$MovieDetailsTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $MovieDetailsTableTable,
+          MovieDetailsTableData,
+          $$MovieDetailsTableTableFilterComposer,
+          $$MovieDetailsTableTableOrderingComposer,
+          $$MovieDetailsTableTableAnnotationComposer,
+          $$MovieDetailsTableTableCreateCompanionBuilder,
+          $$MovieDetailsTableTableUpdateCompanionBuilder,
+          (
+            MovieDetailsTableData,
+            BaseReferences<
+              _$AppDatabase,
+              $MovieDetailsTableTable,
+              MovieDetailsTableData
+            >,
+          ),
+          MovieDetailsTableData,
+          PrefetchHooks Function()
+        > {
+  $$MovieDetailsTableTableTableManager(
+    _$AppDatabase db,
+    $MovieDetailsTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MovieDetailsTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MovieDetailsTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MovieDetailsTableTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String?> title = const Value.absent(),
+                Value<String?> overview = const Value.absent(),
+                Value<double?> voteAverage = const Value.absent(),
+                Value<int?> voteCount = const Value.absent(),
+                Value<String?> releaseDate = const Value.absent(),
+                Value<String?> backdropPath = const Value.absent(),
+                Value<String?> posterPath = const Value.absent(),
+                Value<int?> runtime = const Value.absent(),
+                Value<String?> genres = const Value.absent(),
+              }) => MovieDetailsTableCompanion(
+                id: id,
+                title: title,
+                overview: overview,
+                voteAverage: voteAverage,
+                voteCount: voteCount,
+                releaseDate: releaseDate,
+                backdropPath: backdropPath,
+                posterPath: posterPath,
+                runtime: runtime,
+                genres: genres,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String?> title = const Value.absent(),
+                Value<String?> overview = const Value.absent(),
+                Value<double?> voteAverage = const Value.absent(),
+                Value<int?> voteCount = const Value.absent(),
+                Value<String?> releaseDate = const Value.absent(),
+                Value<String?> backdropPath = const Value.absent(),
+                Value<String?> posterPath = const Value.absent(),
+                Value<int?> runtime = const Value.absent(),
+                Value<String?> genres = const Value.absent(),
+              }) => MovieDetailsTableCompanion.insert(
+                id: id,
+                title: title,
+                overview: overview,
+                voteAverage: voteAverage,
+                voteCount: voteCount,
+                releaseDate: releaseDate,
+                backdropPath: backdropPath,
+                posterPath: posterPath,
+                runtime: runtime,
+                genres: genres,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$MovieDetailsTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $MovieDetailsTableTable,
+      MovieDetailsTableData,
+      $$MovieDetailsTableTableFilterComposer,
+      $$MovieDetailsTableTableOrderingComposer,
+      $$MovieDetailsTableTableAnnotationComposer,
+      $$MovieDetailsTableTableCreateCompanionBuilder,
+      $$MovieDetailsTableTableUpdateCompanionBuilder,
+      (
+        MovieDetailsTableData,
+        BaseReferences<
+          _$AppDatabase,
+          $MovieDetailsTableTable,
+          MovieDetailsTableData
+        >,
+      ),
+      MovieDetailsTableData,
+      PrefetchHooks Function()
+    >;
+typedef $$MovieImagesTableTableCreateCompanionBuilder =
+    MovieImagesTableCompanion Function({
+      required int movieId,
+      required String filePath,
+      Value<int> rowid,
+    });
+typedef $$MovieImagesTableTableUpdateCompanionBuilder =
+    MovieImagesTableCompanion Function({
+      Value<int> movieId,
+      Value<String> filePath,
+      Value<int> rowid,
+    });
+
+class $$MovieImagesTableTableFilterComposer
+    extends Composer<_$AppDatabase, $MovieImagesTableTable> {
+  $$MovieImagesTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get movieId => $composableBuilder(
+    column: $table.movieId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get filePath => $composableBuilder(
+    column: $table.filePath,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$MovieImagesTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $MovieImagesTableTable> {
+  $$MovieImagesTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get movieId => $composableBuilder(
+    column: $table.movieId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get filePath => $composableBuilder(
+    column: $table.filePath,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$MovieImagesTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MovieImagesTableTable> {
+  $$MovieImagesTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get movieId =>
+      $composableBuilder(column: $table.movieId, builder: (column) => column);
+
+  GeneratedColumn<String> get filePath =>
+      $composableBuilder(column: $table.filePath, builder: (column) => column);
+}
+
+class $$MovieImagesTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $MovieImagesTableTable,
+          MovieImagesTableData,
+          $$MovieImagesTableTableFilterComposer,
+          $$MovieImagesTableTableOrderingComposer,
+          $$MovieImagesTableTableAnnotationComposer,
+          $$MovieImagesTableTableCreateCompanionBuilder,
+          $$MovieImagesTableTableUpdateCompanionBuilder,
+          (
+            MovieImagesTableData,
+            BaseReferences<
+              _$AppDatabase,
+              $MovieImagesTableTable,
+              MovieImagesTableData
+            >,
+          ),
+          MovieImagesTableData,
+          PrefetchHooks Function()
+        > {
+  $$MovieImagesTableTableTableManager(
+    _$AppDatabase db,
+    $MovieImagesTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MovieImagesTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MovieImagesTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MovieImagesTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> movieId = const Value.absent(),
+                Value<String> filePath = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => MovieImagesTableCompanion(
+                movieId: movieId,
+                filePath: filePath,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required int movieId,
+                required String filePath,
+                Value<int> rowid = const Value.absent(),
+              }) => MovieImagesTableCompanion.insert(
+                movieId: movieId,
+                filePath: filePath,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$MovieImagesTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $MovieImagesTableTable,
+      MovieImagesTableData,
+      $$MovieImagesTableTableFilterComposer,
+      $$MovieImagesTableTableOrderingComposer,
+      $$MovieImagesTableTableAnnotationComposer,
+      $$MovieImagesTableTableCreateCompanionBuilder,
+      $$MovieImagesTableTableUpdateCompanionBuilder,
+      (
+        MovieImagesTableData,
+        BaseReferences<
+          _$AppDatabase,
+          $MovieImagesTableTable,
+          MovieImagesTableData
+        >,
+      ),
+      MovieImagesTableData,
+      PrefetchHooks Function()
+    >;
+typedef $$MovieCreditsTableTableCreateCompanionBuilder =
+    MovieCreditsTableCompanion Function({
+      required int movieId,
+      required int castId,
+      Value<String?> name,
+      Value<String?> character,
+      Value<String?> profilePath,
+      Value<int> rowid,
+    });
+typedef $$MovieCreditsTableTableUpdateCompanionBuilder =
+    MovieCreditsTableCompanion Function({
+      Value<int> movieId,
+      Value<int> castId,
+      Value<String?> name,
+      Value<String?> character,
+      Value<String?> profilePath,
+      Value<int> rowid,
+    });
+
+class $$MovieCreditsTableTableFilterComposer
+    extends Composer<_$AppDatabase, $MovieCreditsTableTable> {
+  $$MovieCreditsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get movieId => $composableBuilder(
+    column: $table.movieId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get castId => $composableBuilder(
+    column: $table.castId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get character => $composableBuilder(
+    column: $table.character,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get profilePath => $composableBuilder(
+    column: $table.profilePath,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$MovieCreditsTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $MovieCreditsTableTable> {
+  $$MovieCreditsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get movieId => $composableBuilder(
+    column: $table.movieId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get castId => $composableBuilder(
+    column: $table.castId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get character => $composableBuilder(
+    column: $table.character,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get profilePath => $composableBuilder(
+    column: $table.profilePath,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$MovieCreditsTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MovieCreditsTableTable> {
+  $$MovieCreditsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get movieId =>
+      $composableBuilder(column: $table.movieId, builder: (column) => column);
+
+  GeneratedColumn<int> get castId =>
+      $composableBuilder(column: $table.castId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get character =>
+      $composableBuilder(column: $table.character, builder: (column) => column);
+
+  GeneratedColumn<String> get profilePath => $composableBuilder(
+    column: $table.profilePath,
+    builder: (column) => column,
+  );
+}
+
+class $$MovieCreditsTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $MovieCreditsTableTable,
+          MovieCreditsTableData,
+          $$MovieCreditsTableTableFilterComposer,
+          $$MovieCreditsTableTableOrderingComposer,
+          $$MovieCreditsTableTableAnnotationComposer,
+          $$MovieCreditsTableTableCreateCompanionBuilder,
+          $$MovieCreditsTableTableUpdateCompanionBuilder,
+          (
+            MovieCreditsTableData,
+            BaseReferences<
+              _$AppDatabase,
+              $MovieCreditsTableTable,
+              MovieCreditsTableData
+            >,
+          ),
+          MovieCreditsTableData,
+          PrefetchHooks Function()
+        > {
+  $$MovieCreditsTableTableTableManager(
+    _$AppDatabase db,
+    $MovieCreditsTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MovieCreditsTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MovieCreditsTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MovieCreditsTableTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> movieId = const Value.absent(),
+                Value<int> castId = const Value.absent(),
+                Value<String?> name = const Value.absent(),
+                Value<String?> character = const Value.absent(),
+                Value<String?> profilePath = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => MovieCreditsTableCompanion(
+                movieId: movieId,
+                castId: castId,
+                name: name,
+                character: character,
+                profilePath: profilePath,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required int movieId,
+                required int castId,
+                Value<String?> name = const Value.absent(),
+                Value<String?> character = const Value.absent(),
+                Value<String?> profilePath = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => MovieCreditsTableCompanion.insert(
+                movieId: movieId,
+                castId: castId,
+                name: name,
+                character: character,
+                profilePath: profilePath,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$MovieCreditsTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $MovieCreditsTableTable,
+      MovieCreditsTableData,
+      $$MovieCreditsTableTableFilterComposer,
+      $$MovieCreditsTableTableOrderingComposer,
+      $$MovieCreditsTableTableAnnotationComposer,
+      $$MovieCreditsTableTableCreateCompanionBuilder,
+      $$MovieCreditsTableTableUpdateCompanionBuilder,
+      (
+        MovieCreditsTableData,
+        BaseReferences<
+          _$AppDatabase,
+          $MovieCreditsTableTable,
+          MovieCreditsTableData
+        >,
+      ),
+      MovieCreditsTableData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -5376,4 +7274,10 @@ class $AppDatabaseManager {
       $$GenresTableTableTableManager(_db, _db.genresTable);
   $$MoviesByGenreTableTableTableManager get moviesByGenreTable =>
       $$MoviesByGenreTableTableTableManager(_db, _db.moviesByGenreTable);
+  $$MovieDetailsTableTableTableManager get movieDetailsTable =>
+      $$MovieDetailsTableTableTableManager(_db, _db.movieDetailsTable);
+  $$MovieImagesTableTableTableManager get movieImagesTable =>
+      $$MovieImagesTableTableTableManager(_db, _db.movieImagesTable);
+  $$MovieCreditsTableTableTableManager get movieCreditsTable =>
+      $$MovieCreditsTableTableTableManager(_db, _db.movieCreditsTable);
 }

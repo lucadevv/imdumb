@@ -8,6 +8,9 @@ import 'tables/now_playing_movies_table.dart';
 import 'tables/top_rated_movies_table.dart';
 import 'tables/genres_table.dart';
 import 'tables/movies_by_genre_table.dart';
+import 'tables/movie_details_table.dart';
+import 'tables/movie_images_table.dart';
+import 'tables/movie_credits_table.dart';
 
 part 'app_database.g.dart';
 
@@ -26,12 +29,15 @@ part 'app_database.g.dart';
   TopRatedMoviesTable,
   GenresTable,
   MoviesByGenreTable,
+  MovieDetailsTable,
+  MovieImagesTable,
+  MovieCreditsTable,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration {
@@ -40,7 +46,12 @@ class AppDatabase extends _$AppDatabase {
         await m.createAll();
       },
       onUpgrade: (Migrator m, int from, int to) async {
-        // Implementar migraciones si es necesario en el futuro
+        if (from < 2) {
+          // Agregar nuevas tablas para movie details, images y credits
+          await m.createTable(movieDetailsTable);
+          await m.createTable(movieImagesTable);
+          await m.createTable(movieCreditsTable);
+        }
       },
     );
   }

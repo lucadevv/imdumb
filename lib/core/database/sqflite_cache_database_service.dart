@@ -7,6 +7,9 @@ import 'package:imdumb/core/database/cache_database_service.dart';
 import 'package:imdumb/core/utils/helpers/date_parser.dart';
 import 'package:imdumb/features/home/data/models/popular_movie_db_model.dart';
 import 'package:imdumb/features/home/data/models/genre_db_model.dart';
+import 'package:imdumb/features/movie_detail/data/models/movie_detail_db_model.dart';
+import 'package:imdumb/features/movie_detail/data/models/movie_image_db_model.dart';
+import 'package:imdumb/features/movie_detail/data/models/cast_db_model.dart';
 
 /// SOLID: Open/Closed Principle (OCP)
 ///
@@ -18,7 +21,7 @@ import 'package:imdumb/features/home/data/models/genre_db_model.dart';
 /// Proporciona una estrategia alternativa de almacenamiento usando SQLite nativo.
 class SqfliteCacheDatabaseService implements CacheDatabaseService {
   static const String _databaseName = 'app_cache.db';
-  static const int _databaseVersion = 1;
+  static const int _databaseVersion = 2;
 
   Database? _database;
 
@@ -130,10 +133,82 @@ class SqfliteCacheDatabaseService implements CacheDatabaseService {
         PRIMARY KEY (genre_id, movie_id)
       )
     ''');
+
+    // Tabla de detalles de películas
+    await db.execute('''
+      CREATE TABLE movie_details (
+        id INTEGER PRIMARY KEY,
+        title TEXT,
+        overview TEXT,
+        vote_average REAL,
+        vote_count INTEGER,
+        release_date TEXT,
+        backdrop_path TEXT,
+        poster_path TEXT,
+        runtime INTEGER,
+        genres TEXT
+      )
+    ''');
+
+    // Tabla de imágenes de películas
+    await db.execute('''
+      CREATE TABLE movie_images (
+        movie_id INTEGER,
+        file_path TEXT,
+        PRIMARY KEY (movie_id, file_path)
+      )
+    ''');
+
+    // Tabla de créditos (cast) de películas
+    await db.execute('''
+      CREATE TABLE movie_credits (
+        movie_id INTEGER,
+        cast_id INTEGER,
+        name TEXT,
+        character TEXT,
+        profile_path TEXT,
+        PRIMARY KEY (movie_id, cast_id)
+      )
+    ''');
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    // Implementar migraciones si es necesario en el futuro
+    if (oldVersion < 2) {
+      // Agregar tablas para movie details, images y credits
+      await db.execute('''
+        CREATE TABLE IF NOT EXISTS movie_details (
+          id INTEGER PRIMARY KEY,
+          title TEXT,
+          overview TEXT,
+          vote_average REAL,
+          vote_count INTEGER,
+          release_date TEXT,
+          backdrop_path TEXT,
+          poster_path TEXT,
+          runtime INTEGER,
+          genres TEXT
+        )
+      ''');
+
+      await db.execute('''
+        CREATE TABLE IF NOT EXISTS movie_images (
+          movie_id INTEGER,
+          file_path TEXT,
+          PRIMARY KEY (movie_id, file_path)
+        )
+      ''');
+
+      await db.execute('''
+        CREATE TABLE IF NOT EXISTS movie_credits (
+          movie_id INTEGER,
+          cast_id INTEGER,
+          name TEXT,
+          character TEXT,
+          profile_path TEXT,
+          PRIMARY KEY (movie_id, cast_id)
+        )
+      ''');
+    }
   }
 
   // Helper methods para conversión de genreIds
@@ -384,6 +459,153 @@ class SqfliteCacheDatabaseService implements CacheDatabaseService {
       }).toList();
     } catch (e) {
       debugPrint('Error al obtener películas por género: $e');
+      return null;
+    }
+  }
+
+  @override
+  Future<void> cacheMovieDetail(int movieId, MovieDetailDbModel movieDetail) async {
+    try {
+      final db = await database;
+      await db.transaction((txn) async {
+        await txn.delete('movie_details', where: 'id = ?', whereArgs: [movieId]);
+        await txn.insert('movie_details', {
+          'id': movieDetail.id ?? movieId,
+          'title': movieDetail.title,
+          'overview': movieDetail.overview,
+          'vote_average': movieDetail.voteAverage,
+          'vote_count': movieDetail.voteCount,
+          'release_date': movieDetail.releaseDate,
+          'backdrop_path': movieDetail.backdropPath,
+          'poster_path': movieDetail.posterPath,
+          'runtime': movieDetail.runtime,
+          'genres': movieDetail.genres != null ? jsonEncode(movieDetail.genres) : null,
+        });
+      });
+    } catch (e) {
+      debugPrint('Error al cachear detalle de película: $e');
+    }
+  }
+
+  @override
+  Future<MovieDetailDbModel?> getCachedMovieDetail(int movieId) async {
+    try {
+      final db = await database;
+      final maps = await db.query(
+        'movie_details',
+        where: 'id = ?',
+        whereArgs: [movieId],
+      );
+      if (maps.isEmpty) return null;
+      final map = maps.first;
+      return MovieDetailDbModel(
+        id: map['id'] as int?,
+        title: map['title'] as String?,
+        overview: map['overview'] as String?,
+        voteAverage: map['vote_average'] as double?,
+        voteCount: map['vote_count'] as int?,
+        releaseDate: map['release_date'] as String?,
+        backdropPath: map['backdrop_path'] as String?,
+        posterPath: map['poster_path'] as String?,
+        runtime: map['runtime'] as int?,
+        genres: map['genres'] != null
+            ? (jsonDecode(map['genres'] as String) as List)
+                .map((e) => e as Map<String, dynamic>)
+                .toList()
+            : null,
+      );
+    } catch (e) {
+      debugPrint('Error al obtener detalle de película: $e');
+      return null;
+    }
+  }
+
+  @override
+  Future<void> cacheMovieImages(int movieId, List<MovieImageDbModel> images) async {
+    try {
+      final db = await database;
+      await db.transaction((txn) async {
+        await txn.delete('movie_images', where: 'movie_id = ?', whereArgs: [movieId]);
+        final batch = txn.batch();
+        for (final image in images) {
+          if (image.filePath == null || image.filePath!.isEmpty) continue;
+          batch.insert('movie_images', {
+            'movie_id': movieId,
+            'file_path': image.filePath,
+          });
+        }
+        await batch.commit(noResult: true);
+      });
+    } catch (e) {
+      debugPrint('Error al cachear imágenes de película: $e');
+    }
+  }
+
+  @override
+  Future<List<MovieImageDbModel>?> getCachedMovieImages(int movieId) async {
+    try {
+      final db = await database;
+      final maps = await db.query(
+        'movie_images',
+        where: 'movie_id = ?',
+        whereArgs: [movieId],
+      );
+      if (maps.isEmpty) return null;
+      return maps
+          .map((map) => MovieImageDbModel(
+                filePath: map['file_path'] as String?,
+              ))
+          .toList();
+    } catch (e) {
+      debugPrint('Error al obtener imágenes de película: $e');
+      return null;
+    }
+  }
+
+  @override
+  Future<void> cacheMovieCredits(int movieId, List<CastDbModel> casts) async {
+    try {
+      final db = await database;
+      await db.transaction((txn) async {
+        await txn.delete('movie_credits', where: 'movie_id = ?', whereArgs: [movieId]);
+        final batch = txn.batch();
+        for (final cast in casts) {
+          if (cast.id == null) continue;
+          batch.insert('movie_credits', {
+            'movie_id': movieId,
+            'cast_id': cast.id,
+            'name': cast.name,
+            'character': cast.character,
+            'profile_path': cast.profilePath,
+          });
+        }
+        await batch.commit(noResult: true);
+      });
+    } catch (e) {
+      debugPrint('Error al cachear créditos de película: $e');
+    }
+  }
+
+  @override
+  Future<List<CastDbModel>?> getCachedMovieCredits(int movieId) async {
+    try {
+      final db = await database;
+      final maps = await db.query(
+        'movie_credits',
+        where: 'movie_id = ?',
+        whereArgs: [movieId],
+      );
+      if (maps.isEmpty) return null;
+      return maps
+          .map((map) => CastDbModel(
+                id: map['cast_id'] as int?,
+                name: map['name'] as String?,
+                character: map['character'] as String?,
+                profilePath: map['profile_path'] as String?,
+              ))
+          .toList();
+    } catch (e) {
+      debugPrint('Error al obtener créditos de película: $e');
       return null;
     }
   }
