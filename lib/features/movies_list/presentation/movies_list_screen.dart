@@ -10,6 +10,7 @@ import 'package:imdumb/features/movies_list/presentation/widgets/movies_list_emp
 import 'package:imdumb/features/movies_list/presentation/widgets/movies_list_error_state.dart';
 import 'package:imdumb/features/movies_list/presentation/widgets/movies_list_grid.dart';
 import 'package:imdumb/core/services/firebase/analytics_service.dart';
+import 'package:imdumb/core/widgets/molecules/shimmer_movies_list_screen.dart';
 import 'package:imdumb/main.dart';
 
 @RoutePage()
@@ -100,7 +101,9 @@ class _MoviesListScreenState extends State<MoviesListScreen> {
         builder: (context, state) {
           if (state.status == MoviesListStatus.loading &&
               state.movies.isEmpty) {
-            return const Center(child: CircularProgressIndicator());
+            return ShimmerMoviesListScreen(
+              title: widget.genreName ?? widget.type.title,
+            );
           }
 
           if (state.status == MoviesListStatus.failure &&

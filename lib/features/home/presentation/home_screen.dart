@@ -23,6 +23,7 @@ import 'package:imdumb/features/home/presentation/widgets/genre_movies_section.d
 import 'package:imdumb/features/home/presentation/widgets/background_image_widget.dart';
 import 'package:imdumb/features/home/presentation/widgets/genres_drawer.dart';
 import 'package:imdumb/core/services/firebase/analytics_service.dart';
+import 'package:imdumb/core/widgets/molecules/shimmer_home_screen.dart';
 
 @RoutePage()
 class HomeScreen extends StatefulWidget implements AutoRouteWrapper {
@@ -107,49 +108,68 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: const GenresDrawer(),
-      body: SizedBox.expand(
-        child: Stack(
-          children: [
-            BlocBuilder<PopularMoviesBloc, PopularMoviesState>(
-              builder: (context, state) {
-                // Sincronizar el índice con la lista de películas populares
-                final validIndex = state.movies.isNotEmpty
-                    ? _currentCarouselIndex.clamp(0, state.movies.length - 1)
-                    : 0;
-                return BackgroundImageWidget(
-                  currentIndex: validIndex,
-                  movies: state.movies,
-                );
-              },
-            ),
-            RefreshIndicator(
-              onRefresh: () async {
-                context.read<HomeOrchestratorBloc>().loadAllData();
-                // Esperar un poco para que el refresh se complete
-                await Future.delayed(const Duration(milliseconds: 500));
-              },
-              child: CustomScrollView(
-                key: AppKeys.homeScrollView,
-                slivers: [
-                  HomeAppBar(),
-                  PopularMoviesSection(
-                    onPageChanged: (index) {
-                      setState(() {
-                        _currentCarouselIndex = index;
-                      });
-                    },
+    return BlocBuilder<HomeOrchestratorBloc, HomeOrchestratorState>(
+      builder: (context, orchestratorState) {
+        // Mostrar shimmer si todas las secciones principales están cargando y no tienen datos
+        final isLoading = orchestratorState.popularMoviesState.status ==
+                PopularMoviesStatus.loading &&
+            orchestratorState.nowPlayingMoviesState.status ==
+                NowPlayingMoviesStatus.loading &&
+            orchestratorState.topRatedMoviesState.status ==
+                TopRatedMoviesStatus.loading &&
+            orchestratorState.popularMoviesState.movies.isEmpty &&
+            orchestratorState.nowPlayingMoviesState.movies.isEmpty &&
+            orchestratorState.topRatedMoviesState.movies.isEmpty;
+
+        if (isLoading) {
+          return const ShimmerHomeScreen();
+        }
+
+        return Scaffold(
+          drawer: const GenresDrawer(),
+          body: SizedBox.expand(
+            child: Stack(
+              children: [
+                BlocBuilder<PopularMoviesBloc, PopularMoviesState>(
+                  builder: (context, state) {
+                    // Sincronizar el índice con la lista de películas populares
+                    final validIndex = state.movies.isNotEmpty
+                        ? _currentCarouselIndex.clamp(0, state.movies.length - 1)
+                        : 0;
+                    return BackgroundImageWidget(
+                      currentIndex: validIndex,
+                      movies: state.movies,
+                    );
+                  },
+                ),
+                RefreshIndicator(
+                  onRefresh: () async {
+                    context.read<HomeOrchestratorBloc>().loadAllData();
+                    // Esperar un poco para que el refresh se complete
+                    await Future.delayed(const Duration(milliseconds: 500));
+                  },
+                  child: CustomScrollView(
+                    key: AppKeys.homeScrollView,
+                    slivers: [
+                      HomeAppBar(),
+                      PopularMoviesSection(
+                        onPageChanged: (index) {
+                          setState(() {
+                            _currentCarouselIndex = index;
+                          });
+                        },
+                      ),
+                      NowPlayingMoviesSection(),
+                      TopRatedMoviesSection(),
+                      GenreMoviesSections(),
+                    ],
                   ),
-                  NowPlayingMoviesSection(),
-                  TopRatedMoviesSection(),
-                  GenreMoviesSections(),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

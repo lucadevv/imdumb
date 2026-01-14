@@ -9,6 +9,7 @@ import 'package:imdumb/features/search/presentation/widgets/search_app_bar.dart'
 import 'package:imdumb/features/search/presentation/widgets/search_empty_state.dart';
 import 'package:imdumb/features/search/presentation/widgets/search_error_state.dart';
 import 'package:imdumb/features/search/presentation/widgets/search_grid.dart';
+import 'package:imdumb/core/widgets/molecules/shimmer_search_screen.dart';
 import 'package:imdumb/main.dart';
 
 @RoutePage()
@@ -62,7 +63,9 @@ class _SearchScreenState extends State<SearchScreen> {
   void _onScroll() {
     if (_isBottom) {
       final state = context.read<SearchBloc>().state;
-      if (state.hasMore && state.status != SearchStatus.loading && state.query.isNotEmpty) {
+      if (state.hasMore &&
+          state.status != SearchStatus.loading &&
+          state.query.isNotEmpty) {
         context.read<SearchBloc>().add(
           FetchSearchMoviesEvent(
             query: state.query,
@@ -88,6 +91,10 @@ class _SearchScreenState extends State<SearchScreen> {
       key: SearchScreen.screenKey,
       body: BlocBuilder<SearchBloc, SearchState>(
         builder: (context, state) {
+          if (state.status == SearchStatus.loading && state.movies.isEmpty) {
+            return const ShimmerSearchScreen();
+          }
+
           return CustomScrollView(
             key: AppKeys.searchScrollView,
             controller: _scrollController,
@@ -96,26 +103,21 @@ class _SearchScreenState extends State<SearchScreen> {
                 searchController: _searchController,
                 onQueryChanged: (value) {
                   context.read<SearchBloc>().add(
-                        SearchQueryChangedEvent(query: value),
-                      );
+                    SearchQueryChangedEvent(query: value),
+                  );
                 },
                 onBackPressed: () {
                   context.router.pop();
                 },
               ),
-              if (state.status == SearchStatus.loading && state.movies.isEmpty)
-                const SliverFillRemaining(
-                  child: Center(child: CircularProgressIndicator()),
-                )
-              else if (state.status == SearchStatus.failure &&
-                  state.movies.isEmpty)
+              if (state.status == SearchStatus.failure && state.movies.isEmpty)
                 SearchErrorState(
                   errorMessage: state.errorMessage,
                   onRetry: () {
                     if (state.query.isNotEmpty) {
                       context.read<SearchBloc>().add(
-                            FetchSearchMoviesEvent(query: state.query),
-                          );
+                        FetchSearchMoviesEvent(query: state.query),
+                      );
                     }
                   },
                 )
@@ -126,9 +128,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 )
               else if (state.movies.isEmpty &&
                   state.status == SearchStatus.success)
-                const SearchEmptyState(
-                  message: 'No se encontraron películas',
-                )
+                const SearchEmptyState(message: 'No se encontraron películas')
               else
                 SearchGrid(
                   movies: state.movies,
@@ -138,12 +138,12 @@ class _SearchScreenState extends State<SearchScreen> {
                   currentPage: state.page,
                   onLoadMore: () {
                     context.read<SearchBloc>().add(
-                          FetchSearchMoviesEvent(
-                            query: state.query,
-                            page: state.page + 1,
-                            isLoadMore: true,
-                          ),
-                        );
+                      FetchSearchMoviesEvent(
+                        query: state.query,
+                        page: state.page + 1,
+                        isLoadMore: true,
+                      ),
+                    );
                   },
                 ),
             ],
